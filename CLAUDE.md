@@ -62,6 +62,17 @@ dourado em degradê por cor chapada: não foi usado, para não alterar a marca. 
   LCP. Para medir tempo, use perfil em caminho simples (ex.: `C:/Users/Public/...`). Fora do teste não acontece.
 - Grade com faixas `max-content` dentro: use `grid-template-columns: minmax(0, 1fr)` ou a página alarga.
 - `naturalWidth` de imagem com `srcset` vem dividido pela densidade: o alerta "dpr3 > 1" da auditoria é falso nesses casos.
+- Lighthouse (no ar, 25/10/2026): computador 100 em desempenho, acessibilidade, boas práticas e SEO; celular 86–87 em
+  desempenho e 100 no resto. Rodar com `TEMP`/`TMP` apontando para `C:\Users\Public\...` (mesmo problema do perfil).
+  O que segura o celular: a página é montada pelo JavaScript (FCP ~2,3 s no 4G simulado). Próximo passo para passar de
+  90: pré-renderizar o HTML no build e usar `hydrateRoot` (com `createRoot` quando a URL tiver filtros ou `?m=`).
+- **Não montar animação abaixo da dobra na abertura**: cada `useGSAP` que grava estilo e mede layout força um reflow da
+  página inteira. As seções usam `usePerto` (`src/lib/perto.ts`) e só montam perto da tela. Isso tirou o celular de 81
+  para 86–87 e o TBT de 460 para ~70–270 ms. O conteúdo do topo não usa opacidade 0 (fica pronto sob a cortina).
+- **Draggable: decidir no `onDragEnd`, não no `onRelease`** (lá o `isDragging` do GSAP já vem falso; foi por isso que
+  a vitrine não jogava a carta).
+- O teste dos navegadores pode acusar `NS_BINDING_ABORTED` no Firefox: é o navegador cancelando um download de foto
+  (troca de versão do `srcset`). Repita o cenário; se passar, não é defeito.
 
 ## Publicação
 No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicação autorizada pelo usuário).
@@ -69,9 +80,20 @@ No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicaç
   está fixado na conta Roccogolden (a conta ativa do `gh` neste PC é outra), com a identidade
   `Huiatã Ribeiro <223874481+Roccogolden@users.noreply.github.com>`.
 - Vercel: projeto `prime-store-sneakers` no time `huiataribeiro-6837`, ligado ao repositório (o primeiro
-  `deploy --prod --yes` já conectou o GitHub).
+  `deploy --prod --yes` já conectou o GitHub). **Push na `main` publica sozinho** (conferido: status "Vercel" success
+  em ~30 s no commit). A CLI acrescenta `.vercel` ao `.gitignore` ao ligar o projeto; não precisa repetir a linha.
 - Publicar pela CLI: `npm i vercel --ignore-scripts` numa pasta de rascunho (o script do esbuild falha nesse caminho e não
   faz falta) e `node <pasta>/node_modules/vercel/dist/index.js deploy --prod --scope huiataribeiro-6837`, a partir
   desta pasta. `.vercelignore` deixa de fora as fotos originais.
 - Depois de publicar: HTML no ar com consulta anti-cache (`curl -s ".../?n=$RANDOM"`), fotos e fontes com 200, e
   `testar-navegadores.mjs` no endereço real.
+
+## Pendências e decisões em aberto (25/10/2026)
+- **Logos das marcas na faixa** (pedido do usuário): esperando ele confirmar se os tênis são originais. Originais: a Lei
+  9.279/96, art. 132, deixa a loja usar a marca do produto que revende; aí entram logos monocromáticas na faixa (Simple
+  Icons tem Nike, Adidas, New Balance, Puma e Fila; o "hugo" de lá é a linha HUGO, não a BOSS das fotos). Se não forem
+  originais, manter só os nomes: logo oficial é o que costuma gerar notificação e derrubada do site.
+- Logo original da Prime em alta (só existe a do Instagram, 150 px).
+- 206 dos 448 modelos têm nome genérico ("Corrida", "Casual"…): revisar com o Robson.
+- As fotos do fornecedor trazem gravados o código e a REF: fotos próprias dos mais vendidos ou retirar as etiquetas.
+- Domínio próprio, Google Analytics com aviso de cookies (medir cliques no WhatsApp) e ficha no Google.
