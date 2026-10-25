@@ -1,0 +1,9 @@
+# Só o que o build precisa vai para a Vercel (src/, public/, index.html, configs). As fotos originais do fornecedor
+# (.catalogo-cache) ficam de fora; o site usa as versões WebP já geradas em public/fotos.
+.catalogo-cache
+node_modules
+dist
+publicar
+relatorio-qualidade
+kit-lancamento
+.env*

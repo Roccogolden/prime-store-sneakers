@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.vercel
+.env*
+*.log
+.catalogo-cache/
+relatorio-qualidade/
+kit-lancamento/entrega/

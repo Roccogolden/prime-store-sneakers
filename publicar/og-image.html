@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Prévia do link (og:image 1200 × 630). Nome e logo no quadrado central (o WhatsApp do computador recorta o centro).
+         Gerar: node <site-agencia>/scripts/renderizar-html.mjs publicar/og-image.html - public/og-image.jpg 1200 630
+         Ao trocar a imagem, suba o ?v= do og:image no index.html (o WhatsApp guarda a prévia pelo endereço). -->
+    <style>
+      @font-face { font-family: 'Archivo'; font-weight: 500 900; font-stretch: 75% 125%; src: url('../public/fontes/archivo-latin.woff2') format('woff2'); }
+      @font-face { font-family: 'Outfit'; font-weight: 400 700; src: url('../public/fontes/outfit-latin.woff2') format('woff2'); }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        width: 1200px; height: 630px; overflow: hidden; position: relative; color: #f6f2ea; font-family: 'Outfit', sans-serif;
+        background: radial-gradient(ellipse 50% 60% at 50% 105%, rgba(196, 130, 30, 0.28), transparent 70%), #0b0b0c;
+      }
+      .foto {
+        position: absolute; width: 236px; aspect-ratio: 3 / 4; border-radius: 22px; overflow: hidden;
+        border: 1.5px solid rgba(201, 162, 83, 0.5); box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.9);
+      }
+      .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .foto--esq { left: 6px; top: 150px; transform: rotate(-9deg); }
+      .foto--esq2 { left: -120px; top: 30px; transform: rotate(-16deg); opacity: 0.45; width: 200px; }
+      .foto--dir { right: 6px; top: 150px; transform: rotate(9deg); }
+      .foto--dir2 { right: -120px; top: 30px; transform: rotate(16deg); opacity: 0.45; width: 200px; }
+      .anel { position: absolute; left: 50%; top: 50%; width: 600px; height: 600px; margin: -300px 0 0 -300px; border-radius: 50%; border: 1.5px solid rgba(201, 162, 83, 0.28); }
+      .centro { position: absolute; left: 285px; width: 630px; top: 0; height: 630px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+      .laco { width: 108px; height: 30px; overflow: visible; margin-bottom: 26px; }
+      .laco path { fill: none; stroke: #f3b932; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+      .laco circle { fill: #0b0b0c; stroke: #c9a253; stroke-width: 2; }
+      .logo { width: 128px; height: 128px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(201, 162, 83, 0.55); }
+      .nome { margin-top: 26px; font-family: 'Archivo'; font-weight: 800; font-stretch: 112%; font-size: 54px; line-height: 1; letter-spacing: 0.04em; }
+      .nome span { color: #f3b932; }
+      .linha { margin-top: 18px; font-size: 26px; font-weight: 600; }
+      .local { margin-top: 10px; font-size: 21px; font-weight: 500; color: #c9a253; }
+    </style>
+  </head>
+  <body>
+    <div class="anel"></div>
+    <div class="foto foto--esq2"><img src="../public/fotos/p045-720.webp" alt="" /></div>
+    <div class="foto foto--dir2"><img src="../public/fotos/p048-720.webp" alt="" /></div>
+    <div class="foto foto--esq"><img src="../public/fotos/p167-720.webp" alt="" /></div>
+    <div class="foto foto--dir"><img src="../public/fotos/p265-720.webp" alt="" /></div>
+    <div class="centro">
+      <svg class="laco" viewBox="0 0 72 20" aria-hidden="true">
+        <path d="M6 3 L26 17 L46 3 L66 17" /><path d="M6 17 L26 3 L46 17 L66 3" />
+        <circle cx="6" cy="3" r="2.3" /><circle cx="6" cy="17" r="2.3" /><circle cx="26" cy="3" r="2.3" /><circle cx="26" cy="17" r="2.3" />
+        <circle cx="46" cy="3" r="2.3" /><circle cx="46" cy="17" r="2.3" /><circle cx="66" cy="3" r="2.3" /><circle cx="66" cy="17" r="2.3" />
+      </svg>
+      <img class="logo" src="../public/marca/logo-prime.webp" alt="" />
+      <p class="nome">PRIME <span>STORE</span></p>
+      <p class="linha">Catálogo de tênis por marca e numeração</p>
+      <p class="local">Aparecida de Goiânia – GO · Pedidos pelo WhatsApp</p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "Prime Store · Catálogo de tênis",
+  "short_name": "Prime Store",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0b0c",
+  "theme_color": "#0b0b0c",
+  "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+}

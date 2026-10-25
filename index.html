@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Prime Store · Catálogo de tênis em Aparecida de Goiânia</title>
+    <meta
+      name="description"
+      content="Catálogo da Prime Store com 448 modelos de tênis separados por marca, modelo e numeração. Escolha o seu e peça pelo WhatsApp. Aparecida de Goiânia – GO e região."
+    />
+    <link rel="canonical" href="https://prime-store-sneakers.vercel.app/" />
+    <meta name="theme-color" content="#0b0b0c" />
+    <meta name="color-scheme" content="dark" />
+    <style>html,body{background:#0b0b0c}</style>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Prime Store" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content="Prime Store · Catálogo de tênis" />
+    <meta property="og:description" content="448 modelos separados por marca e numeração. Escolha o seu e peça pelo WhatsApp. Aparecida de Goiânia – GO." />
+    <meta property="og:url" content="https://prime-store-sneakers.vercel.app/" />
+    <meta property="og:image" content="https://prime-store-sneakers.vercel.app/og-image.jpg?v=a37336a7" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logo da Prime Store e tênis do catálogo" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ShoeStore",
+        "name": "Prime Store",
+        "url": "https://prime-store-sneakers.vercel.app/",
+        "image": "https://prime-store-sneakers.vercel.app/og-image.jpg",
+        "logo": "https://prime-store-sneakers.vercel.app/marca/logo-prime-150.png",
+        "telephone": "+55-62-98116-8032",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Aparecida de Goiânia",
+          "addressRegion": "GO",
+          "addressCountry": "BR"
+        },
+        "areaServed": "Aparecida de Goiânia e região",
+        "sameAs": ["https://www.instagram.com/prime.storego/"]
+      }
+    </script>
+
+    <script>
+      // Abertura: completa na 1ª visita da sessão, curta ao recarregar, nenhuma com "reduzir movimento"
+      // ou quando o link já aponta para um tênis (?m=). Se o JS da página falhar, a tela se solta em 7 s.
+      (function () {
+        try {
+          var h = document.documentElement;
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          if (/[?&]m=/.test(location.search)) return;
+          var visto = false;
+          try {
+            visto = sessionStorage.getItem('abertura-vista') === '1';
+            sessionStorage.setItem('abertura-vista', '1');
+          } catch (e) {}
+          var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+          var curta = visto || (nav && nav.type === 'reload');
+          h.classList.add('has-intro');
+          if (curta) h.classList.add('intro-curta');
+          setTimeout(function () {
+            h.classList.remove('has-intro', 'intro-curta');
+          }, 7000);
+        } catch (e) {}
+      })();
+    </script>
+
+    <link
+      rel="preload"
+      as="image"
+      href="/fotos/p265-720.webp"
+      imagesrcset="/fotos/p265-400.webp 400w, /fotos/p265-720.webp 720w, /fotos/p265-1080.webp 1080w"
+      imagesizes="(max-width: 767px) 78vw, 420px"
+      fetchpriority="high"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <div style="max-width: 560px; margin: 0 auto; padding: 48px 20px; font-family: system-ui, sans-serif; color: #f6f2ea; background: #0b0b0c">
+        <img src="/marca/logo-prime.webp" alt="Prime Store" width="72" height="72" style="border-radius: 50%" />
+        <h1 style="font-size: 2rem; margin: 16px 0 8px">Prime Store</h1>
+        <p>Catálogo de tênis em Aparecida de Goiânia – GO. Para ver os modelos, ative o JavaScript ou fale direto com o Robson.</p>
+        <p>
+          <a style="color: #f3b932" href="https://wa.me/5562981168032">WhatsApp (62) 98116-8032</a> ·
+          <a style="color: #f3b932" href="https://www.instagram.com/prime.storego/">@prime.storego</a>
+        </p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
