@@ -1625,6 +1625,7 @@ html.has-intro body {
   top: -38px;
   overflow: visible;
   pointer-events: none;
+  visibility: hidden; /* aparece quando o script mede o botão e desenha o contorno */
 }
 .laco-botao__svg path {
   fill: none;

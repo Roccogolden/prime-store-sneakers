@@ -1,5 +1,6 @@
 import { useRef, type ReactNode } from 'react';
 import { gsap, useGSAP, reduzMovimento } from '../lib/gsap';
+import { usePerto } from '../lib/perto';
 
 /**
  * Assinatura da marca: o cadarço dourado.
@@ -15,10 +16,11 @@ const ILHOS_TITULO = [6, 26, 46, 66].flatMap((x) => [
 /** Marcador de seção: quatro pares de ilhós com o cadarço cruzado. Desenha uma vez ao aparecer. */
 export function MarcadorCadarco() {
   const ref = useRef<SVGSVGElement>(null);
+  const perto = usePerto(ref);
 
   useGSAP(
     () => {
-      if (reduzMovimento()) return;
+      if (!perto || reduzMovimento()) return;
       const svg = ref.current!;
       const ilhos = svg.querySelectorAll('circle');
       const lacos = svg.querySelectorAll('path');
@@ -29,7 +31,7 @@ export function MarcadorCadarco() {
         .to(ilhos, { scale: 1, duration: 0.3, stagger: 0.03, ease: 'back.out(2.4)' })
         .to(lacos, { drawSVG: '100%', duration: 0.7, stagger: 0.12, ease: 'power2.inOut' }, 0.12);
     },
-    { scope: ref },
+    { scope: ref, dependencies: [perto] },
   );
 
   return (
@@ -89,9 +91,11 @@ export function CadarcoAbertura() {
  */
 export function LacoNoBotao({ children }: { children: ReactNode }) {
   const caixa = useRef<HTMLSpanElement>(null);
+  const perto = usePerto(caixa);
 
   useGSAP(
     () => {
+      if (!perto) return;
       const el = caixa.current!;
       const svg = el.querySelector('svg')!;
       const contorno = svg.querySelector<SVGPathElement>('.laco-botao__contorno')!;
@@ -114,6 +118,7 @@ export function LacoNoBotao({ children }: { children: ReactNode }) {
           `M${x0} ${t} H${w - r} A${r} ${r} 0 0 1 ${w - r} ${t + h} H${r} A${r} ${r} 0 0 1 ${r} ${t} H${x0 + 2}`,
         );
         posicao.setAttribute('transform', `translate(${x0} ${t})`);
+        svg.style.visibility = 'visible';
       }
       desenhar();
       const ro = new ResizeObserver(desenhar);
@@ -131,7 +136,7 @@ export function LacoNoBotao({ children }: { children: ReactNode }) {
       }
       return () => ro.disconnect();
     },
-    { scope: caixa },
+    { scope: caixa, dependencies: [perto] },
   );
 
   return (

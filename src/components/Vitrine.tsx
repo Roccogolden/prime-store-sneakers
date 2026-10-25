@@ -51,7 +51,12 @@ export function Vitrine({ aoAbrir }: { aoAbrir: (id: string) => void }) {
           el.tabIndex = i === atual ? 0 : -1;
           el.setAttribute('aria-hidden', i === atual ? 'false' : 'true');
         });
-        drags.forEach((d, i) => (i === atual ? d.enable() : d.disable()));
+        drags.forEach((d, i) => {
+          if (i !== atual) d.disable();
+        });
+        const d = drags.get(atual);
+        if (d) d.enable();
+        else drags.set(atual, criarDrag(atual));
       };
 
       const jogar = contextSafe!((dir: number) => {
@@ -95,8 +100,12 @@ export function Vitrine({ aoAbrir }: { aoAbrir: (id: string) => void }) {
         gsap.delayedCall(0.6, () => (ocupado.current = false));
       });
 
-      const drags = cartas.current.map((el) =>
-        Draggable.create(el, {
+      // O arrasto só existe na carta de cima e é criado na primeira vez que ela chega ao topo
+      // (seis Draggables de uma vez mediam o layout seis vezes na abertura da página).
+      const drags = new Map<number, Draggable>();
+      const criarDrag = (i: number) => {
+        const el = cartas.current[i];
+        return Draggable.create(el, {
           type: 'x',
           dragClickables: true,
           minimumMovement: 6,
@@ -108,16 +117,16 @@ export function Vitrine({ aoAbrir }: { aoAbrir: (id: string) => void }) {
           onDrag() {
             gsap.set(el, { rotation: this.x / 14 });
           },
-          onRelease() {
-            if (!this.isDragging) return;
+          // onDragEnd só dispara quando houve arrasto (no onRelease o isDragging já vem falso)
+          onDragEnd() {
             const v = Math.abs(this.x) > el.offsetWidth * 0.28;
             if (v) jogar(this.x < 0 ? -1 : 1);
             else gsap.to(el, { x: 0, rotation: 0, duration: 0.7, ease: 'elastic.out(1, 0.5)' });
             setTimeout(() => (arrastou.current = false), 60);
             relogio?.restart(true);
           },
-        })[0],
-      );
+        })[0];
+      };
 
       arrumar(false);
       controle.current = { jogar, voltar };

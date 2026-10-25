@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { gsap, useGSAP, reduzMovimento } from '../lib/gsap';
+import { usePerto } from '../lib/perto';
 import { itens } from '../lib/catalogo';
 import { loja } from '../lib/loja';
 import { TituloSecao } from './Cadarco';
@@ -22,10 +23,11 @@ const PASSOS = [
 /** A loja em poucas linhas e o passo a passo do pedido. Os passos são ilhós ligados pelo cadarço. */
 export function Prime() {
   const raiz = useRef<HTMLElement>(null);
+  const perto = usePerto(raiz);
 
   useGSAP(
     () => {
-      if (reduzMovimento()) return;
+      if (!perto || reduzMovimento()) return;
       const q = gsap.utils.selector(raiz);
       const ilhos = q('.passo__ilho');
       const lacos = q('.passos__laco path');
@@ -48,7 +50,7 @@ export function Prime() {
         scrollTrigger: { trigger: q('.prime__fatos')[0], start: 'top 88%', once: true },
       });
     },
-    { scope: raiz },
+    { scope: raiz, dependencies: [perto] },
   );
 
   return (

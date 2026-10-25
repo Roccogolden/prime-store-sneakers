@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react';
 import { gsap, useGSAP, Draggable, reduzMovimento } from '../lib/gsap';
+import { usePerto } from '../lib/perto';
 import { IconeAnterior, IconeProximo } from './Icones';
 
 interface Props {
@@ -21,9 +22,11 @@ export function Trilho({ children, rotulo, className = '', setas = 'grandes', ch
   const faixa = useRef<HTMLDivElement>(null);
   const drag = useRef<Draggable | null>(null);
   const [pontas, setPontas] = useState({ inicio: true, fim: false });
+  const perto = usePerto(janela);
 
   useGSAP(
     (_, contextSafe) => {
+      if (!perto) return;
       const j = janela.current!;
       const f = faixa.current!;
       gsap.set(f, { x: 0 });
@@ -78,7 +81,7 @@ export function Trilho({ children, rotulo, className = '', setas = 'grandes', ch
         d.kill();
       };
     },
-    { scope: janela, dependencies: [chave], revertOnUpdate: true },
+    { scope: janela, dependencies: [chave, perto], revertOnUpdate: true },
   );
 
   function mover(alvo: number) {

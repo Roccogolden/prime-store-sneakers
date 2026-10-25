@@ -15,6 +15,7 @@ import {
   type Tenis,
 } from '../lib/catalogo';
 import { loja, whatsappLink, mensagemGeral } from '../lib/loja';
+import { usePerto } from '../lib/perto';
 import { CartaoTenis } from './CartaoTenis';
 import { TituloSecao } from './Cadarco';
 import { Trilho } from './Trilho';
@@ -67,6 +68,8 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
   const painel = useRef<HTMLDivElement>(null);
   const [busca, setBusca] = useState(filtro.busca);
   const [barraVisivel, setBarraVisivel] = useState(false);
+  const montado = useRef(false);
+  const gradePerto = usePerto(grade);
 
   // "Ver mais" volta a 24 sempre que o filtro muda
   const chave = `${filtro.linha}|${filtro.marca}|${filtro.modelo}|${filtro.num}|${filtro.busca}`;
@@ -107,8 +110,13 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
     };
   }, []);
 
-  // Filtro mudou: os cartões que ficam deslizam, os novos sobem
+  // Filtro mudou: os cartões que ficam deslizam, os novos sobem.
+  // Na montagem não há o que animar nem medir (o ScrollTrigger já se mede quando a página carrega).
   useLayoutEffect(() => {
+    if (!montado.current) {
+      montado.current = true;
+      return;
+    }
     const cartoes = grade.current!.querySelectorAll<HTMLElement>('.cartao');
     if (estadoFlip) {
       const estado = estadoFlip;
@@ -136,10 +144,10 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
     ScrollTrigger.refresh();
   }, [limite, chave, pagina.chave]);
 
-  // Entrada da primeira leva, em lotes, conforme aparece
+  // Entrada da primeira leva, em lotes, conforme aparece (montada só quando a grade chega perto da tela)
   useGSAP(
     () => {
-      if (reduzMovimento()) return;
+      if (!gradePerto || reduzMovimento()) return;
       const cartoes = gsap.utils.toArray<HTMLElement>('.cartao', grade.current);
       gsap.set(cartoes, { autoAlpha: 0, y: 36, rotation: -2 });
       ScrollTrigger.batch(cartoes, {
@@ -148,7 +156,7 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
         onEnter: (lote) => gsap.to(lote, { autoAlpha: 1, y: 0, rotation: 0, duration: 0.6, stagger: 0.05, overwrite: true }),
       });
     },
-    { scope: raiz },
+    { scope: raiz, dependencies: [gradePerto] },
   );
 
   // Barra de resumo fixa enquanto os filtros estão fora da tela e a grade está nela

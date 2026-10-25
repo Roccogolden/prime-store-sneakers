@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { gsap, useGSAP, ScrollTrigger, reduzMovimento } from '../lib/gsap';
+import { usePerto } from '../lib/perto';
 import { marcas, porId, srcset, fotoPadrao, totalChuteiras, totalInfantil, type Linha } from '../lib/catalogo';
 import { TituloSecao } from './Cadarco';
 import { Trilho } from './Trilho';
@@ -50,10 +51,11 @@ interface Props {
 export function Marcas({ aoEscolherMarca, aoEscolherLinha }: Props) {
   const raiz = useRef<HTMLElement>(null);
   const lista = marcas.filter((m) => CAPAS[m.slug]);
+  const perto = usePerto(raiz);
 
   useGSAP(
     () => {
-      if (reduzMovimento()) return;
+      if (!perto || reduzMovimento()) return;
       const cartoes = gsap.utils.toArray<HTMLElement>('.marca-cartao', raiz.current);
       gsap.set(cartoes, { autoAlpha: 0, x: 60, rotation: 2 });
       ScrollTrigger.create({
@@ -64,7 +66,7 @@ export function Marcas({ aoEscolherMarca, aoEscolherLinha }: Props) {
           gsap.to(cartoes, { autoAlpha: 1, x: 0, rotation: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out' }),
       });
     },
-    { scope: raiz },
+    { scope: raiz, dependencies: [perto] },
   );
 
   return (

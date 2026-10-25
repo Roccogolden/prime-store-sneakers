@@ -18,23 +18,25 @@ export function Hero({ aoAbrir }: { aoAbrir: (id: string) => void }) {
       if (reduzMovimento()) return;
       const q = gsap.utils.selector(raiz);
       const anel = q('.hero__anel circle');
-      gsap.set(q('.hero__olho, .hero__texto, .hero__botoes > *'), { autoAlpha: 0, y: 18 });
-      gsap.set(q('.hero__linha'), { autoAlpha: 0, yPercent: 60, skewY: 5 });
-      gsap.set(q('.hero__destaques li'), { autoAlpha: 0, x: -14 });
+      // O conteúdo já nasce pronto debaixo da cortina da abertura e só desliza para o lugar quando ela sobe
+      // (sem opacidade zero: o título e a foto contam como carregados logo no primeiro quadro).
+      gsap.set(q('.hero__olho, .hero__texto, .hero__botoes > *'), { y: 22 });
+      gsap.set(q('.hero__linha'), { yPercent: 45, skewY: 4 });
+      gsap.set(q('.hero__destaques li'), { x: -14 });
       gsap.set(q('.hero__destaques li i'), { scaleY: 0, transformOrigin: '50% 0%' });
-      gsap.set(q('.vitrine'), { autoAlpha: 0, y: 40, rotation: -4 });
+      gsap.set(q('.vitrine'), { y: 40, rotation: -4 });
       gsap.set(anel, { drawSVG: '0%' });
 
       const entrar = () => {
         gsap
           .timeline({ defaults: { ease: 'power3.out' } })
-          .to(q('.hero__olho'), { autoAlpha: 1, y: 0, duration: 0.5 })
-          .to(q('.hero__linha'), { autoAlpha: 1, yPercent: 0, skewY: 0, duration: 0.9, ease: 'expo.out', stagger: 0.13 }, 0.05)
-          .to(q('.hero__texto'), { autoAlpha: 1, y: 0, duration: 0.6 }, 0.35)
-          .to(q('.hero__botoes > *'), { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.08, ease: 'back.out(1.6)' }, 0.45)
-          .to(q('.hero__destaques li'), { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.08 }, 0.6)
-          .to(q('.hero__destaques li i'), { scaleY: 1, duration: 0.5, stagger: 0.08, ease: 'power2.inOut' }, 0.6)
-          .to(q('.vitrine'), { autoAlpha: 1, y: 0, rotation: 0, duration: 1, ease: 'elastic.out(1, 0.75)' }, 0.3)
+          .to(q('.hero__olho'), { y: 0, duration: 0.6 })
+          .to(q('.hero__linha'), { yPercent: 0, skewY: 0, duration: 1, ease: 'expo.out', stagger: 0.12 }, 0.05)
+          .to(q('.hero__texto'), { y: 0, duration: 0.8 }, 0.25)
+          .to(q('.hero__botoes > *'), { y: 0, duration: 0.7, stagger: 0.08, ease: 'back.out(1.6)' }, 0.35)
+          .to(q('.hero__destaques li'), { x: 0, duration: 0.6, stagger: 0.08 }, 0.5)
+          .to(q('.hero__destaques li i'), { scaleY: 1, duration: 0.5, stagger: 0.08, ease: 'power2.inOut' }, 0.55)
+          .to(q('.vitrine'), { y: 0, rotation: 0, duration: 1, ease: 'elastic.out(1, 0.75)' }, 0.25)
           .to(anel, { drawSVG: '100%', duration: 1.6, ease: 'power2.inOut' }, 0.2);
       };
 

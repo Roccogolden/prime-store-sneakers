@@ -64,5 +64,14 @@ dourado em degradê por cor chapada: não foi usado, para não alterar a marca. 
 - `naturalWidth` de imagem com `srcset` vem dividido pela densidade: o alerta "dpr3 > 1" da auditoria é falso nesses casos.
 
 ## Publicação
-GitHub da conta **Roccogolden** + Vercel (time `huiataribeiro-6837`), endereço previsto
-https://prime-store-sneakers.vercel.app. Perguntar ao usuário antes do primeiro push.
+No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicação autorizada pelo usuário).
+- GitHub: `Roccogolden/prime-store-sneakers` (público, como os outros sites de clientes). O credential helper local
+  está fixado na conta Roccogolden (a conta ativa do `gh` neste PC é outra), com a identidade
+  `Huiatã Ribeiro <223874481+Roccogolden@users.noreply.github.com>`.
+- Vercel: projeto `prime-store-sneakers` no time `huiataribeiro-6837`, ligado ao repositório (o primeiro
+  `deploy --prod --yes` já conectou o GitHub).
+- Publicar pela CLI: `npm i vercel --ignore-scripts` numa pasta de rascunho (o script do esbuild falha nesse caminho e não
+  faz falta) e `node <pasta>/node_modules/vercel/dist/index.js deploy --prod --scope huiataribeiro-6837`, a partir
+  desta pasta. `.vercelignore` deixa de fora as fotos originais.
+- Depois de publicar: HTML no ar com consulta anti-cache (`curl -s ".../?n=$RANDOM"`), fotos e fontes com 200, e
+  `testar-navegadores.mjs` no endereço real.

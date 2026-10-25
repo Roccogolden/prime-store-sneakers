@@ -1,16 +1,18 @@
 import { useRef } from 'react';
 import { gsap, useGSAP, ScrollTrigger, reduzMovimento } from '../lib/gsap';
 import { marcas } from '../lib/catalogo';
+import { usePerto } from '../lib/perto';
 
 const NA_FAIXA = marcas.filter((m) => m.nome !== 'Outras marcas' && m.nome !== 'Personagens' && m.total >= 4);
 
 /** Faixa com os nomes das marcas do catálogo. Anda sozinha e acelera com a rolagem; cada nome filtra o catálogo. */
 export function FaixaMarcas({ aoEscolher }: { aoEscolher: (marca: string) => void }) {
   const raiz = useRef<HTMLDivElement>(null);
+  const perto = usePerto(raiz);
 
   useGSAP(
     () => {
-      if (reduzMovimento()) return;
+      if (!perto || reduzMovimento()) return;
       const faixa = raiz.current!.querySelector('.faixa__trilha')!;
       const giro = gsap.to(faixa, { xPercent: -50, ease: 'none', duration: 38, repeat: -1 });
       // Velocidade por um único quickTo (nada de tween novo a cada quadro de rolagem)
@@ -42,7 +44,7 @@ export function FaixaMarcas({ aoEscolher }: { aoEscolher: (marca: string) => voi
         el.removeEventListener('focusout', seguir);
       };
     },
-    { scope: raiz },
+    { scope: raiz, dependencies: [perto] },
   );
 
   const lista = (copia: boolean) =>
