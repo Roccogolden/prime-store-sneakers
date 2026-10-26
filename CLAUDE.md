@@ -147,10 +147,14 @@ No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicaç
   `testar-navegadores.mjs` no endereço real.
 
 ## Pendências e decisões em aberto (25/10/2026)
-- **Logos das marcas na faixa** (pedido do usuário): esperando ele confirmar se os tênis são originais. Originais: a Lei
-  9.279/96, art. 132, deixa a loja usar a marca do produto que revende; aí entram logos monocromáticas na faixa (Simple
-  Icons tem Nike, Adidas, New Balance, Puma e Fila; o "hugo" de lá é a linha HUGO, não a BOSS das fotos). Se não forem
-  originais, manter só os nomes: logo oficial é o que costuma gerar notificação e derrubada do site.
+- **Logos das marcas na faixa: decidido NÃO colocar (26/10/2026).** O usuário confirmou que os tênis são "primeira
+  linha" (não são originais). A faixa fica só com os nomes, que filtram o catálogo. Logo oficial em loja de não
+  originais é o que as marcas rastreiam e notificam (derrubada do site; GitHub e Vercel são as contas do usuário) e
+  agrava o uso da marca (Lei 9.279/96, arts. 189 e 190). Nenhum texto do site diz "original" (conferido em 26/10/2026):
+  não escrever "original", "autêntico" nem "garantia de originalidade".
+- **Aviso "primeira linha" no site** (Código de Defesa do Consumidor, arts. 6º, III, e 31: sem preço no site, quem vê
+  "Nike Air Force 1" pode entender que é original). Recomendado ao usuário em 26/10/2026; esperando o texto aprovado
+  pelo Robson.
 - Logo original da Prime em alta (só existe a do Instagram, 150 px).
 - 206 dos 448 modelos têm nome genérico ("Corrida", "Casual"…): revisar com o Robson.
 - Fotos próprias dos mais vendidos (as do fornecedor já estão sem etiquetas, mas fotos da loja dão mais confiança).
