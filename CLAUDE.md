@@ -34,8 +34,10 @@ do fornecedor "Neffos X1". A mesma foto aparece em várias numerações: o scrip
    igual para todas: sombras +10, contraste +5, vibração +8, textura +14, clareza +4, **sem mexer nos realces** (fundo
    branco continua branco: 237 → 236). O automático do LightCraft acinzentava os brancos e foi descartado. Cache em
    `.catalogo-cache/revelada/`; `--sem-revelar` pula essa etapa; sem o LightCraft instalado, usa a original;
-6. gera `public/fotos/<id>-{400,720,1080}.webp` e `src/data/catalogo.json` (com `desde`: o dia em que a foto entrou
-   no álbum, usado na faixa "Chegaram agora").
+6. gera `public/fotos/<id>-{400,720,1080}.webp`, o `<id>-fundo.webp` (a própria foto com 96 px, desfocada: preenche o
+   quadro quando a foto aparece inteira, no cartão de foto quadrada/deitada e no detalhe, no lugar de faixas de cor
+   lisa) e `src/data/catalogo.json` (com `desde`: o dia em que a foto entrou no álbum, usado em "Chegaram agora").
+   A data "Catálogo atualizado em" é a da leitura dos álbuns (arquivo `.catalogo-cache/albuns.json`): `--offline` não muda.
 Foto nova sem linha na classificação **não entra** no site: o script lista os ids para classificar.
 Para atualizar: `npm run catalogo` → classificar as novas no `.tsv` → `npm run etiquetas` → revisar as fotos novas
 limpas → `npm run catalogo -- --offline` → build.
@@ -48,13 +50,31 @@ de cor ("Preto branco", "Alta e baixa") e faixas brancas onde apagou preços. `n
 2. `textos.mjs`: OCR do Windows (`ocr.ps1`) nas faixas de cima e de baixo; rótulos de código/REF/cor viram regiões;
 3. `extras.mjs`: OCR ampliado dos cantos de cima (REF pequena sobre fundo claro que os outros passos perdem);
 4. `juntar-manuais.mjs`: caixas da revisão visual em `catalogo/etiquetas-manuais.json` (texto no meio da foto,
-   pílula preta, prints com faixas lisas → `recorte`, área difícil → `clone` de um pedaço parecido da própria foto);
+   pílula preta, prints com faixas lisas → `recorte`, área difícil → `clone` de um pedaço parecido da própria foto).
+   Pode rodar sobre o próprio `etiquetas.json`: tira as caixas da revisão anterior antes de pôr as atuais;
 5. `limpar.mjs`: "Remove" do PhotoCraft em todas as regiões de uma vez (testado contra o preenchimento sensível ao
    conteúdo, que copiou pele e objetos). Resultado em `.catalogo-cache/limpa/`; regiões finais em `catalogo/etiquetas.json`.
+   Depois do PhotoCraft, a faixa de 16 px junto à borda da foto é conferida: ele deixava uma lasca branca da pílula
+   colada na beirada (40 fotos tinham, corrigidas em 26/10/2026).
+   Caixa manual com `modo` não vai ao PhotoCraft e manda nas regiões automáticas que ela cobre:
+   - `letras`: texto escrito direto na foto (sem pílula), em cima do pulso ou da mesa: refaz só os traços das letras,
+     o resto fica intacto. `cor` (`escura`/`clara`) e `raio` (espessura máxima do traço) opcionais;
+   - `forma`: pílula sobre pele ou superfície lisa: refaz só a pílula (pela cor, com as letras de dentro); `todas: true`
+     pega todas as manchas da cor (rabisco em vários pedaços);
+   - `suave`: a caixa inteira no preenchimento suave.
+   Sobre textura (pedra, pelo, madeira, papelão) o PhotoCraft ainda é o melhor, com caixa só um pouco maior que a pílula:
+   caixa grande faz ele copiar pedaços do tênis. Etiqueta numa faixa sem tênis (em cima): `recorte` resolve melhor.
+   Para refazer só algumas fotos: `node scripts/etiquetas/juntar-manuais.mjs catalogo/etiquetas.json
+   catalogo/etiquetas-manuais.json catalogo/etiquetas.json` → `node scripts/etiquetas/limpar.mjs .catalogo-cache/orig
+   catalogo/etiquetas.json .catalogo-cache/limpa p006,p033` → `npm run catalogo -- --offline`.
 Revisão de 25/10/2026: 968 regiões automáticas (731 pílulas/faixas, 231 pelo OCR, 6 dos cantos) + 35 caixas manuais,
 5 recortes e 1 clone, nas 448 fotos — todas conferidas em folhas de contato.
+Revisão em tamanho real de 26/10/2026 (o detalhe mostra a foto grande): os textos sobre o pulso viravam retângulos
+borrados e o PhotoCraft copiava logo e pedaços de tênis para a pele (p533, p544, p006, p084). Refeitas com `letras` e
+`forma`; p137, p208, p409 e p549 recortadas; contornos de pílula que sobravam (p071, p222, p419, p467, p646) fechados.
+**Revise sempre em tamanho real** (folha original | limpa, recortada em volta de cada caixa), não em miniatura.
 Ficaram de propósito: o texto de anúncios diagramados (p297, p299), marcas d'água de terceiros ("Dois AI" na p079 e o
-brilho do Gemini em algumas) e o texto das caixas dos tênis. Texto em cima do braço vira mancha: prefira recortar (p362, p464).
+brilho do Gemini em algumas) e o texto das caixas dos tênis.
 
 Regras da classificação (não inventar):
 - Modelo só com nome quando dá para reconhecer na foto ou o fornecedor escreveu (ex.: "Air Max TL 2.5", "NIKE DN").

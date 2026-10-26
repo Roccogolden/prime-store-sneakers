@@ -168,6 +168,11 @@ for (const f of noSite) {
     }
     ws.push(w);
   }
+  // a própria foto pequena e desfocada: preenche o quadro quando ela aparece inteira (no lugar de faixas de cor lisa)
+  const fundo = path.join(FOTOS, `${f.id}-fundo.webp`);
+  if (!fs.existsSync(fundo) || fs.statSync(fundo).mtimeMs < fs.statSync(orig).mtimeMs) {
+    await sharp(orig).rotate().resize({ width: 96 }).blur(4).modulate({ brightness: 0.78, saturation: 1.1 }).webp({ quality: 60 }).toFile(fundo);
+  }
   // cor média um pouco escurecida: fundo do cartão enquanto a foto carrega
   const { channels } = await sharp(orig).rotate().resize(32).stats();
   const hex = '#' + channels.slice(0, 3).map((c) => Math.round(c.mean * 0.72).toString(16).padStart(2, '0')).join('');
@@ -191,11 +196,12 @@ for (const f of noSite) {
 }
 
 // Remove WebP de fotos que saíram do site
-const vivos = new Set(itens.flatMap((it) => it.ws.map((w) => `${it.id}-${w}.webp`)));
+const vivos = new Set(itens.flatMap((it) => [...it.ws.map((w) => `${it.id}-${w}.webp`), `${it.id}-fundo.webp`]));
 for (const arq of fs.readdirSync(FOTOS)) if (arq.endsWith('.webp') && !vivos.has(arq)) fs.unlinkSync(path.join(FOTOS, arq));
 
-const hoje = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date());
-fs.writeFileSync(SAIDA, JSON.stringify({ atualizadoEm: hoje, numeracoes: ordemNums, itens }));
+// O site mostra o dia em que os álbuns foram lidos: rodar com --offline não muda a data.
+const lidoEm = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(fs.statSync(cacheAlbuns).mtime);
+fs.writeFileSync(SAIDA, JSON.stringify({ atualizadoEm: lidoEm, numeracoes: ordemNums, itens }));
 
 console.log(`\n${itens.length} modelos no site (${fotos.size} fotos únicas nos álbuns).`);
 if (semClasse.length) {

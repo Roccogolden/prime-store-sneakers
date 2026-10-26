@@ -204,7 +204,8 @@
     "y": 661,
     "w": 395,
     "h": 134,
-    "motivo": "Air TL 2.5 / Preto branco prata"
+    "motivo": "Air TL 2.5 / Preto branco prata",
+    "modo": "letras"
    }
   ]
  },
@@ -763,7 +764,17 @@
     "h": 85
    }
   ],
-  "manuais": []
+  "manuais": [
+   {
+    "tipo": "manual",
+    "x": 86,
+    "y": 736,
+    "w": 203,
+    "h": 105,
+    "motivo": "Preto",
+    "modo": "forma"
+   }
+  ]
  },
  "p030": {
   "W": 1086,
@@ -905,7 +916,8 @@
     "y": 611,
     "w": 301,
     "h": 121,
-    "motivo": "Air max TL 2.5 / Preto"
+    "motivo": "Air max TL 2.5 / Preto",
+    "modo": "letras"
    }
   ]
  },
@@ -1428,7 +1440,18 @@
     "h": 255
    }
   ],
-  "manuais": []
+  "manuais": [
+   {
+    "tipo": "manual",
+    "x": 594,
+    "y": 1170,
+    "w": 492,
+    "h": 260,
+    "motivo": "Grade / Alta e Baixa",
+    "modo": "letras",
+    "cor": "clara"
+   }
+  ]
  },
  "p056": {
   "W": 1073,
@@ -1760,11 +1783,12 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 30,
-    "y": 1040,
-    "w": 530,
-    "h": 110,
-    "motivo": "Alta e baixa"
+    "x": 20,
+    "y": 1030,
+    "w": 555,
+    "h": 130,
+    "motivo": "Alta e baixa",
+    "modo": "forma"
    }
   ]
  },
@@ -2055,7 +2079,26 @@
     "h": 162
    }
   ],
-  "manuais": []
+  "manuais": [
+   {
+    "tipo": "manual",
+    "x": 400,
+    "y": 0,
+    "w": 545,
+    "h": 168,
+    "motivo": "Grade Alta",
+    "modo": "letras",
+    "cor": "escura"
+   },
+   {
+    "tipo": "manual",
+    "x": 738,
+    "y": 0,
+    "w": 202,
+    "h": 100,
+    "motivo": "REF"
+   }
+  ]
  },
  "p085": {
   "W": 900,
@@ -2615,11 +2658,19 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 640,
-    "y": 40,
-    "w": 195,
-    "h": 85,
-    "motivo": "ESPECIAL"
+    "x": 600,
+    "y": 30,
+    "w": 240,
+    "h": 105,
+    "motivo": "ESPECIAL e coração"
+   },
+   {
+    "tipo": "manual",
+    "x": 815,
+    "y": 110,
+    "w": 60,
+    "h": 260,
+    "motivo": "borda esquerda da faixa branca"
    }
   ]
  },
@@ -3185,8 +3236,9 @@
     "x": 30,
     "y": 670,
     "w": 400,
-    "h": 155,
-    "motivo": "Wave prophecy 1 / Branco prata"
+    "h": 180,
+    "motivo": "Wave prophecy 1 / Branco prata",
+    "modo": "letras"
    }
   ]
  },
@@ -3227,11 +3279,12 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 26,
-    "y": 600,
-    "w": 360,
-    "h": 130,
-    "motivo": "Wave prophecy 1 / Preto prata"
+    "x": 15,
+    "y": 598,
+    "w": 375,
+    "h": 140,
+    "motivo": "Wave prophecy 1 / Preto prata",
+    "modo": "letras"
    }
   ]
  },
@@ -3311,6 +3364,12 @@
     "h": 90,
     "motivo": "ALTA"
    }
+  ],
+  "recorte": [
+   0,
+   135,
+   813,
+   828
   ]
  },
  "p138": {
@@ -4804,12 +4863,18 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 965,
+    "x": 955,
     "y": 0,
-    "w": 235,
-    "h": 95,
+    "w": 245,
+    "h": 100,
     "motivo": "REF 15"
    }
+  ],
+  "recorte": [
+   0,
+   110,
+   1200,
+   1490
   ]
  },
  "p209": {
@@ -5205,9 +5270,9 @@
    {
     "tipo": "manual",
     "x": 0,
-    "y": 1105,
-    "w": 345,
-    "h": 90,
+    "y": 1100,
+    "w": 400,
+    "h": 100,
     "motivo": "código"
    }
   ]
@@ -5343,7 +5408,10 @@
     "y": 295,
     "w": 200,
     "h": 80,
-    "motivo": "Baixa"
+    "motivo": "Baixa",
+    "modo": "letras",
+    "cor": "clara",
+    "raio": 16
    }
   ]
  },
@@ -7785,12 +7853,18 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 3420,
-    "y": 40,
-    "w": 740,
-    "h": 280,
+    "x": 3380,
+    "y": 20,
+    "w": 780,
+    "h": 330,
     "motivo": "REF 12"
    }
+  ],
+  "recorte": [
+   0,
+   350,
+   4160,
+   2423
   ]
  },
  "p410": {
@@ -8063,10 +8137,10 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 290,
-    "y": 262,
-    "w": 535,
-    "h": 143,
+    "x": 275,
+    "y": 250,
+    "w": 565,
+    "h": 170,
     "motivo": "ADIDAS TEREX PTO/VERDE LIMÃO"
    }
   ]
@@ -9121,11 +9195,12 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 45,
-    "y": 630,
-    "w": 250,
-    "h": 115,
-    "motivo": "NB 200 / Preto branco"
+    "x": 40,
+    "y": 625,
+    "w": 280,
+    "h": 135,
+    "motivo": "NB 2000 / Preto branco",
+    "modo": "letras"
    }
   ]
  },
@@ -9369,10 +9444,10 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 815,
+    "x": 805,
     "y": 0,
-    "w": 265,
-    "h": 655,
+    "w": 285,
+    "h": 690,
     "motivo": "faixa branca alta"
    }
   ]
@@ -9933,7 +10008,16 @@
     "h": 205
    }
   ],
-  "manuais": []
+  "manuais": [
+   {
+    "tipo": "manual",
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 228,
+    "motivo": "W07W1Y08Y1 / NIKE DN / Preto ouro"
+   }
+  ]
  },
  "p487": {
   "W": 1045,
@@ -11179,7 +11263,17 @@
     "h": 168
    }
   ],
-  "manuais": []
+  "manuais": [
+   {
+    "tipo": "manual",
+    "x": 20,
+    "y": 940,
+    "w": 420,
+    "h": 190,
+    "motivo": "Rosê pink",
+    "modo": "forma"
+   }
+  ]
  },
  "p534": {
   "W": 1280,
@@ -11429,7 +11523,25 @@
     "h": 72
    }
   ],
-  "manuais": []
+  "manuais": [
+   {
+    "tipo": "manual",
+    "x": 0,
+    "y": 0,
+    "w": 380,
+    "h": 90,
+    "motivo": "código"
+   },
+   {
+    "tipo": "manual",
+    "x": 0,
+    "y": 10,
+    "w": 22,
+    "h": 75,
+    "motivo": "ponta da pílula na beirada",
+    "modo": "suave"
+   }
+  ]
  },
  "p544": {
   "W": 859,
@@ -11465,7 +11577,17 @@
     "h": 107
    }
   ],
-  "manuais": []
+  "manuais": [
+   {
+    "tipo": "manual",
+    "x": 240,
+    "y": 405,
+    "w": 315,
+    "h": 122,
+    "motivo": "Society",
+    "modo": "forma"
+   }
+  ]
  },
  "p545": {
   "W": 960,
@@ -11603,7 +11725,13 @@
     "h": 60
    }
   ],
-  "manuais": []
+  "manuais": [],
+  "recorte": [
+   0,
+   68,
+   768,
+   829
+  ]
  },
  "p550": {
   "W": 1200,
@@ -12552,10 +12680,13 @@
    {
     "tipo": "manual",
     "x": 0,
-    "y": 600,
-    "w": 245,
-    "h": 135,
-    "motivo": "Baby + rabisco"
+    "y": 595,
+    "w": 290,
+    "h": 145,
+    "motivo": "Baby + rabisco",
+    "modo": "forma",
+    "cor": "escura",
+    "todas": true
    }
   ],
   "recorte": [
@@ -13353,11 +13484,12 @@
   "manuais": [
    {
     "tipo": "manual",
-    "x": 95,
-    "y": 905,
-    "w": 335,
-    "h": 95,
-    "motivo": "Preto prata"
+    "x": 70,
+    "y": 890,
+    "w": 385,
+    "h": 110,
+    "motivo": "Preto prata",
+    "modo": "forma"
    }
   ]
  },
@@ -13755,10 +13887,18 @@
    {
     "tipo": "manual",
     "x": 0,
-    "y": 40,
-    "w": 720,
-    "h": 110,
+    "y": 35,
+    "w": 730,
+    "h": 130,
     "motivo": "Fila F1 - Baixa"
+   },
+   {
+    "tipo": "manual",
+    "x": 370,
+    "y": 0,
+    "w": 70,
+    "h": 110,
+    "motivo": "canto da pílula"
    }
   ]
  },

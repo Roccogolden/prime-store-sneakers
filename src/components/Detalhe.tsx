@@ -5,6 +5,7 @@ import {
   dataCurta,
   descricaoAlt,
   fotoPadrao,
+  fundoDesfocado,
   itens,
   linkDoTenis,
   mensagemDoTenis,
@@ -165,7 +166,7 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
         <div className="detalhe__rolagem" data-lenis-prevent>
           <figure
             className={`detalhe__foto${zoom ? ' detalhe__foto--zoom' : ''}`}
-            style={{ background: t.bg }}
+            style={{ background: fundoDesfocado(t) }}
             onPointerDown={(e) => {
               toque.current = { x: e.clientX, y: e.clientY };
               if (zoom && e.pointerType !== 'mouse') mirar(e);

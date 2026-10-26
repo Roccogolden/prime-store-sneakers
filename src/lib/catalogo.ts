@@ -61,6 +61,11 @@ export function fotoPadrao(t: Tenis, alvo = 720) {
   return `/fotos/${t.id}-${w}.webp`;
 }
 
+/** Fundo (CSS `background`) de um quadro em que a foto aparece inteira: ela mesma, pequena e desfocada, sobre a cor média. */
+export function fundoDesfocado(t: Tenis) {
+  return `${t.bg} url(/fotos/${t.id}-fundo.webp) center / cover no-repeat`;
+}
+
 export function nomeCompleto(t: Tenis) {
   if (t.marca === 'Outras marcas') return `Tênis ${t.modelo.toLowerCase()}`;
   if (t.marca === 'Personagens') return `Tênis infantil ${t.modelo}`;

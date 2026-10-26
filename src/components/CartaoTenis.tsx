@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { descricaoAlt, fotoPadrao, resumoNumeracoes, srcset, type Tenis } from '../lib/catalogo';
+import { descricaoAlt, fotoPadrao, fundoDesfocado, resumoNumeracoes, srcset, type Tenis } from '../lib/catalogo';
 
 interface Props {
   t: Tenis;
@@ -8,14 +8,14 @@ interface Props {
   foto: boolean;
 }
 
-/** Fotos deitadas ou quadradas aparecem inteiras sobre a cor da própria foto; as em pé preenchem o cartão. */
+/** Fotos deitadas ou quadradas aparecem inteiras sobre elas mesmas desfocadas; as em pé preenchem o cartão. */
 export const CartaoTenis = memo(function CartaoTenis({ t, aoAbrir, foto }: Props) {
   const inteira = t.h / t.w < 1.2;
   const marca = t.marca === 'Personagens' ? 'Infantil' : t.marca;
   return (
     <li className="cartao" data-id={t.id}>
       <button type="button" className="cartao__botao" onClick={() => aoAbrir(t.id)} aria-label={`Ver ${descricaoAlt(t)}`}>
-        <span className={`cartao__foto${inteira ? ' cartao__foto--inteira' : ''}`} style={{ background: t.bg }}>
+        <span className={`cartao__foto${inteira ? ' cartao__foto--inteira' : ''}`} style={{ background: inteira && foto ? fundoDesfocado(t) : t.bg }}>
           {foto ? (
             <img
               src={fotoPadrao(t, 400)}
