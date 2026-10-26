@@ -152,9 +152,9 @@ No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicaç
   originais é o que as marcas rastreiam e notificam (derrubada do site; GitHub e Vercel são as contas do usuário) e
   agrava o uso da marca (Lei 9.279/96, arts. 189 e 190). Nenhum texto do site diz "original" (conferido em 26/10/2026):
   não escrever "original", "autêntico" nem "garantia de originalidade".
-- **Aviso "primeira linha" no site** (Código de Defesa do Consumidor, arts. 6º, III, e 31: sem preço no site, quem vê
-  "Nike Air Force 1" pode entender que é original). Recomendado ao usuário em 26/10/2026; esperando o texto aprovado
-  pelo Robson.
+- **Aviso "primeira linha" no site:** recomendado em 26/10/2026 (Código de Defesa do Consumidor, arts. 6º, III, e 31:
+  sem preço no site, quem vê "Nike Air Force 1" pode entender que é original). O usuário decidiu deixar sem o aviso.
+  Não insistir; só voltar ao assunto se ele pedir.
 - Logo original da Prime em alta (só existe a do Instagram, 150 px).
 - 206 dos 448 modelos têm nome genérico ("Corrida", "Casual"…): revisar com o Robson.
 - Fotos próprias dos mais vendidos (as do fornecedor já estão sem etiquetas, mas fotos da loja dão mais confiança).
