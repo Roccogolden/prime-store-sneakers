@@ -1945,6 +1945,13 @@ html.has-intro body {
   opacity: 1;
   translate: 0 0;
 }
+/* no celular a barra do filtro ocupa o mesmo rodapé: o rótulo some enquanto ela aparece */
+@media (max-width: 899px) {
+  body:has(.barra-filtro--visivel) .flutuante__rotulo {
+    opacity: 0;
+    translate: 12px 0;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

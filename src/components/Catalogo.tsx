@@ -160,16 +160,15 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
     { scope: raiz, dependencies: [gradePerto] },
   );
 
-  // Barra de resumo fixa enquanto os filtros estão fora da tela e a grade está nela
+  // Barra de resumo fixa enquanto os filtros estão fora da tela (acima) e a grade está nela.
+  // A posição do painel é medida a cada aviso: num pulo de rolagem (recarregar no meio da página) ele vai de
+  // "abaixo" para "acima" sem cruzar a tela, e o observador não avisaria nada sobre ele.
   useEffect(() => {
-    let painelFora = false;
     let gradeDentro = false;
     const io = new IntersectionObserver(
       (entradas) => {
-        for (const e of entradas) {
-          if (e.target === painel.current) painelFora = !e.isIntersecting && e.boundingClientRect.top < 0;
-          else gradeDentro = e.isIntersecting;
-        }
+        for (const e of entradas) if (e.target === grade.current) gradeDentro = e.isIntersecting;
+        const painelFora = painel.current!.getBoundingClientRect().bottom < 72;
         setBarraVisivel(painelFora && gradeDentro);
       },
       { rootMargin: '-72px 0px 0px 0px' },
