@@ -39,6 +39,9 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 const LIGHTCRAFT = process.env.LIGHTCRAFT || 'C:/Program Files/LightCraft/lightcraft-cli.exe';
 const REVELACAO = ['light.shadows=10', 'light.contrast=5', 'color.vibrance=8', 'effects.texture=14', 'effects.clarity=4'];
 const REVELADAS = path.join(CACHE, 'revelada');
+// Fotos sem as etiquetas do fornecedor (código, REF, cor, preço apagado), feitas por `npm run etiquetas`.
+const LIMPAS = path.join(CACHE, 'limpa');
+const fonteDe = (id) => (fs.existsSync(path.join(LIMPAS, id + '.jpg')) ? path.join(LIMPAS, id + '.jpg') : path.join(ORIG, id + '.jpg'));
 
 const offline = process.argv.includes('--offline');
 const lerJson = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
@@ -129,14 +132,14 @@ if (temLightcraft) {
   const exec = promisify(execFile);
   const pendentes = noSite.filter((f) => {
     const r = path.join(REVELADAS, f.id + '.jpg');
-    return !fs.existsSync(r) || fs.statSync(r).mtimeMs < fs.statSync(path.join(ORIG, f.id + '.jpg')).mtimeMs;
+    return !fs.existsSync(r) || fs.statSync(r).mtimeMs < fs.statSync(fonteDe(f.id)).mtimeMs;
   });
   let feitas = 0;
   const fila = [...pendentes];
   await Promise.all(
     Array.from({ length: 4 }, async () => {
       for (let f = fila.shift(); f; f = fila.shift()) {
-        const args = ['render', path.join(ORIG, f.id + '.jpg'), '-o', path.join(REVELADAS, f.id + '.jpg'), '--quality', '95'];
+        const args = ['render', fonteDe(f.id), '-o', path.join(REVELADAS, f.id + '.jpg'), '--quality', '95'];
         for (const s of REVELACAO) args.push('--set', s);
         await exec(LIGHTCRAFT, args, { timeout: 180000 });
         if (++feitas % 25 === 0) console.log(`revelando no LightCraft: ${feitas}/${pendentes.length}`);
@@ -151,7 +154,7 @@ if (temLightcraft) {
 for (const f of noSite) {
   const c = classes.get(f.id);
   const revelada = path.join(REVELADAS, f.id + '.jpg');
-  const orig = temLightcraft && fs.existsSync(revelada) ? revelada : path.join(ORIG, f.id + '.jpg');
+  const orig = temLightcraft && fs.existsSync(revelada) ? revelada : fonteDe(f.id);
   const meta = await sharp(orig).rotate().metadata();
   const larguraReal = meta.autoOrient?.width ?? meta.width;
   const alturaReal = meta.autoOrient?.height ?? meta.height;
@@ -169,7 +172,10 @@ for (const f of noSite) {
   const { channels } = await sharp(orig).rotate().resize(32).stats();
   const hex = '#' + channels.slice(0, 3).map((c) => Math.round(c.mean * 0.72).toString(16).padStart(2, '0')).join('');
   const nums = ordemNums.filter((n) => f.nums.includes(n));
+  // dia em que a foto entrou (ou foi atualizada) no catálogo do fornecedor, no fuso de Goiás
+  const desde = f.atualizado ? new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date(f.atualizado)) : null;
   itens.push({
+    desde,
     id: f.id,
     marca: c.marca === '?' ? 'Outras marcas' : c.marca,
     modelo: c.modelo === '?' ? 'Casual' : c.modelo,

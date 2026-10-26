@@ -5,6 +5,7 @@ import { Abertura } from './components/Abertura';
 import { Cabecalho } from './components/Cabecalho';
 import { Hero } from './components/Hero';
 import { FaixaMarcas } from './components/FaixaMarcas';
+import { Novidades } from './components/Novidades';
 import { Marcas } from './components/Marcas';
 import { Catalogo, prepararFlip } from './components/Catalogo';
 import { Prime } from './components/Prime';
@@ -17,7 +18,8 @@ import { Detalhe } from './components/Detalhe';
 const LINHAS: Linha[] = ['todos', 'tenis', 'chuteiras', 'infantil'];
 
 function lerUrl() {
-  const p = new URLSearchParams(window.location.search);
+  // na pré-renderização (build) não há endereço: a página sai no estado inicial
+  const p = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
   const linha = p.get('linha') as Linha | null;
   const filtro: Filtro = {
     linha: linha && LINHAS.includes(linha) ? linha : 'todos',
@@ -106,6 +108,7 @@ export default function App() {
       <main>
         <Hero aoAbrir={abrir} />
         <FaixaMarcas aoEscolher={escolherMarca} />
+        <Novidades aoAbrir={abrir} />
         <Marcas aoEscolherMarca={escolherMarca} aoEscolherLinha={escolherLinha} />
         <Catalogo filtro={filtro} lista={lista} aoFiltrar={aoFiltrar} aoAbrir={abrir} />
         <Prime />

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap, useGSAP, Draggable, reduzMovimento, ehCelular } from '../lib/gsap';
 import { descricaoAlt, nomeCompleto, porId, srcset, fotoPadrao, type Tenis } from '../lib/catalogo';
 import { IconeAnterior, IconeProximo, IconeSeta } from './Icones';
@@ -6,6 +6,17 @@ import { IconeAnterior, IconeProximo, IconeSeta } from './Icones';
 const IDS = ['p265', 'p167', 'p048', 'p009', 'p121', 'p005'];
 const VISIVEIS = 4;
 const INTERVALO = 4.2;
+const GIROS = [0, 1.2, -1.2, 0.6];
+
+/** Pose de cada carta na pilha (a mesma do GSAP), já no HTML pré-renderizado: a de cima aparece antes do JS. */
+function poseInicial(k: number, n: number) {
+  const j = Math.min(k, VISIVEIS - 1);
+  return {
+    zIndex: n - k,
+    transform: `translateY(${j * 14}px) rotate(${GIROS[j]}deg) scale(${1 - j * 0.06})`,
+    ...(k < VISIVEIS ? {} : { opacity: 0, visibility: 'hidden' as const }),
+  };
+}
 
 /**
  * Pilha de fotos reais do catálogo. A de cima pode ser arrastada e jogada para o lado;
@@ -20,6 +31,13 @@ export function Vitrine({ aoAbrir }: { aoAbrir: (id: string) => void }) {
   const ocupado = useRef(false);
   const [topo, setTopo] = useState(0);
   const controle = useRef<{ jogar: (dir: number) => void; voltar: () => void } | null>(null);
+  // Na abertura só a carta de cima baixa a foto (ela é o LCP); as de trás entram quando o navegador fica livre
+  const [todas, setTodas] = useState(false);
+  useEffect(() => {
+    const w = window as Window & { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number };
+    if (w.requestIdleCallback) w.requestIdleCallback(() => setTodas(true), { timeout: 1500 });
+    else setTimeout(() => setTodas(true), 600);
+  }, []);
 
   useGSAP(
     (_, contextSafe) => {
@@ -27,7 +45,7 @@ export function Vitrine({ aoAbrir }: { aoAbrir: (id: string) => void }) {
       const mob = ehCelular();
       const quieto = reduzMovimento();
       const passo = mob ? 12 : 16;
-      const giros = [0, 1.2, -1.2, 0.6];
+      const giros = GIROS;
 
       // As cartas de trás aparecem só por baixo: as etiquetas do topo das fotos ficam escondidas
       const pose = (k: number) => ({
@@ -172,24 +190,25 @@ export function Vitrine({ aoAbrir }: { aoAbrir: (id: string) => void }) {
             ref={(el) => {
               if (el) cartas.current[i] = el;
             }}
-            style={{ background: t.bg }}
+            style={{ background: t.bg, ...poseInicial(i, itens.length) }}
             onClick={() => {
               if (arrastou.current) return;
               aoAbrir(t.id);
             }}
             aria-label={`Ver ${descricaoAlt(t)}`}
           >
-            <img
-              src={fotoPadrao(t, 720)}
-              srcSet={srcset(t)}
-              sizes="(max-width: 767px) 78vw, 420px"
-              width={t.w}
-              height={t.h}
-              alt=""
-              draggable={false}
-              fetchPriority={i === 0 ? 'high' : 'low'}
-              loading={i < 2 ? 'eager' : 'lazy'}
-            />
+            {i === 0 || todas ? (
+              <img
+                src={fotoPadrao(t, 720)}
+                srcSet={srcset(t)}
+                sizes="(max-width: 767px) 78vw, 420px"
+                width={t.w}
+                height={t.h}
+                alt=""
+                draggable={false}
+                fetchPriority={i === 0 ? 'high' : 'low'}
+              />
+            ) : null}
           </button>
         ))}
       </div>

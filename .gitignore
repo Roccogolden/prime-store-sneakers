@@ -6,3 +6,4 @@ dist/
 .catalogo-cache/
 relatorio-qualidade/
 kit-lancamento/entrega/
+dist-ssr/

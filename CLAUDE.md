@@ -12,8 +12,12 @@ marca, modelo e numeração, e leva o pedido para o WhatsApp do Robson. **Sem pr
 
 ## Stack e comandos
 Vite + React 18 + TypeScript + GSAP 3.13 (ScrollTrigger, Flip, Draggable, Inertia, DrawSVG) + Lenis. CSS puro com tokens.
-- `npm run dev` / `npm run build` (tsc + vite) / `npm run lint`
-- `npm run catalogo` atualiza o catálogo (ver abaixo); `node scripts/marca.mjs` refaz logo, ícones e posts.
+- `npm run dev` / `npm run build` / `npm run lint`. O build faz tsc, o Vite, um build SSR de `src/entry-server.tsx` e
+  `scripts/prerender.mjs`, que grava no `dist/index.html` o HTML da página no estado inicial (título, vitrine e catálogo
+  aparecem antes do JS e o Google lê tudo). No navegador, sem `?` no endereço o React só hidrata (`hydrateRoot`); com
+  filtros ou `?m=` renderiza por cima (`createRoot`). Nada pode ler `window` durante a renderização (só em efeitos).
+- `npm run catalogo` atualiza o catálogo (ver abaixo); `npm run etiquetas` limpa as fotos novas; `node scripts/marca.mjs`
+  refaz logo, ícones e posts.
 - No Windows, os scripts chamam `node node_modules/...` direto: o `npx`/`.cmd` quebra com o "&" de "Huiatã & Lindy".
 
 ## Catálogo (o coração do site)
@@ -25,12 +29,32 @@ do fornecedor "Neffos X1". A mesma foto aparece em várias numerações: o scrip
    (`catalogo/ids.json`, p001…);
 2. junta fotos repetidas com chaves diferentes (`catalogo/duplicadas.json`, achadas por hash perceptual);
 3. aplica `catalogo/classificacao.tsv` (id, marca, modelo, tipo, cor), classificado foto a foto em 25/10/2026;
-4. revela cada foto no **LightCraft** (ArtCraft, `C:\Program Files\LightCraft\lightcraft-cli.exe`) com um ajuste leve e
+4. usa a foto **sem as etiquetas do fornecedor** (`.catalogo-cache/limpa/`, ver "Etiquetas" abaixo), se existir;
+5. revela cada foto no **LightCraft** (ArtCraft, `C:\Program Files\LightCraft\lightcraft-cli.exe`) com um ajuste leve e
    igual para todas: sombras +10, contraste +5, vibração +8, textura +14, clareza +4, **sem mexer nos realces** (fundo
    branco continua branco: 237 → 236). O automático do LightCraft acinzentava os brancos e foi descartado. Cache em
    `.catalogo-cache/revelada/`; `--sem-revelar` pula essa etapa; sem o LightCraft instalado, usa a original;
-5. gera `public/fotos/<id>-{400,720,1080}.webp` e `src/data/catalogo.json`.
+6. gera `public/fotos/<id>-{400,720,1080}.webp` e `src/data/catalogo.json` (com `desde`: o dia em que a foto entrou
+   no álbum, usado na faixa "Chegaram agora").
 Foto nova sem linha na classificação **não entra** no site: o script lista os ids para classificar.
+Para atualizar: `npm run catalogo` → classificar as novas no `.tsv` → `npm run etiquetas` → revisar as fotos novas
+limpas → `npm run catalogo -- --offline` → build.
+
+### Etiquetas (código, REF, cor, preço apagado) — tiradas das fotos em 25/10/2026
+O fornecedor grava nas fotos o código de preço (ex.: W08W8Y10Y0, que parece o preço cifrado: 088/100), a REF, rótulos
+de cor ("Preto branco", "Alta e baixa") e faixas brancas onde apagou preços. `npm run etiquetas` (scripts/etiquetas/):
+1. `pilulas.mjs`: pílulas brancas com texto (fechamento morfológico) e faixas brancas lisas (inclusive grudadas noutra
+   etiqueta: maior retângulo de branco puro com bordas nítidas);
+2. `textos.mjs`: OCR do Windows (`ocr.ps1`) nas faixas de cima e de baixo; rótulos de código/REF/cor viram regiões;
+3. `extras.mjs`: OCR ampliado dos cantos de cima (REF pequena sobre fundo claro que os outros passos perdem);
+4. `juntar-manuais.mjs`: caixas da revisão visual em `catalogo/etiquetas-manuais.json` (texto no meio da foto,
+   pílula preta, prints com faixas lisas → `recorte`, área difícil → `clone` de um pedaço parecido da própria foto);
+5. `limpar.mjs`: "Remove" do PhotoCraft em todas as regiões de uma vez (testado contra o preenchimento sensível ao
+   conteúdo, que copiou pele e objetos). Resultado em `.catalogo-cache/limpa/`; regiões finais em `catalogo/etiquetas.json`.
+Revisão de 25/10/2026: 968 regiões automáticas (731 pílulas/faixas, 231 pelo OCR, 6 dos cantos) + 35 caixas manuais,
+5 recortes e 1 clone, nas 448 fotos — todas conferidas em folhas de contato.
+Ficaram de propósito: o texto de anúncios diagramados (p297, p299), marcas d'água de terceiros ("Dois AI" na p079 e o
+brilho do Gemini em algumas) e o texto das caixas dos tênis. Texto em cima do braço vira mancha: prefira recortar (p362, p464).
 
 Regras da classificação (não inventar):
 - Modelo só com nome quando dá para reconhecer na foto ou o fornecedor escreveu (ex.: "Air Max TL 2.5", "NIKE DN").
@@ -50,22 +74,36 @@ dourado em degradê por cor chapada: não foi usado, para não alterar a marca. 
 ## Identidade
 - Cores: preto `#0B0B0C`, grafite `#151517`/`#1F1F22`, amarelo-ouro `#F3B932` (botões), ouro velho `#C9A253` (logo,
   detalhes), marfim `#F6F2EA`. Fontes: Archivo (títulos, eixo de largura) + Outfit (texto), hospedadas em `public/fontes`.
-- **Assinatura: o cadarço dourado.** Abertura: ilhós aparecem, o cadarço cruza de baixo para cima e dá o laço, entra
-  "PRIME STORE" e a cortina sobe (completa na 1ª visita da sessão, curta ao recarregar, nenhuma com link `?m=` ou
-  "reduzir movimento"). Ao longo: marcador de cadarço antes de cada título; "Como pedir" são ilhós ligados pelo cadarço.
-  Fechamento: o cadarço contorna o botão "Chamar no WhatsApp" e dá o laço; o botão aperta. 404: o cadarço incompleto.
+- **Assinatura: o cadarço dourado.** Abertura "o ilhós se abre" (refeita em 25/10/2026 a pedido do usuário, ~3,4 s):
+  um brilho dourado acende, dois anéis finos se desenham (a moldura da logo / o ilhós), os ilhós aparecem, o cadarço
+  cruza e dá o laço dentro do anel, "PRIME" sobe letra por letra e "STORE" se fecha; então um furo redondo nasce no anel
+  e cresce até revelar o site (máscara radial na cortina, com os anéis acompanhando a borda). Completa na 1ª visita da
+  sessão, curta ao recarregar (~0,8 s), nenhuma com link `?m=` ou "reduzir movimento"; pula com toque, rolagem ou tecla.
+  Ao longo: marcador de cadarço antes de cada título; "Como pedir" são ilhós ligados pelo cadarço. Fechamento: o cadarço
+  contorna o botão "Chamar no WhatsApp" e dá o laço; o botão aperta. 404: o cadarço incompleto.
 - Movimento: vitrine em pilha que se arrasta e joga (Draggable + Inertia), faixa de marcas que acelera com a rolagem,
-  filtros com Flip, cartões que "pousam" ao entrar. Nada das revelações do portfólio do Huiatã.
+  "Chegaram agora" (os 14 que entraram por último no catálogo, com o dia), filtros com Flip, cartões que "pousam" ao
+  entrar, foto do tênis que amplia 2,2× no toque/clique e passeia com o dedo/mouse. Nada das revelações do portfólio.
 
 ## Verificação (aprendido aqui)
 - Chrome de teste com perfil dentro do Temp do usuário ("HUIAT&~1") leva ~6 s no primeiro `sessionStorage` e infla o
   LCP. Para medir tempo, use perfil em caminho simples (ex.: `C:/Users/Public/...`). Fora do teste não acontece.
 - Grade com faixas `max-content` dentro: use `grid-template-columns: minmax(0, 1fr)` ou a página alarga.
 - `naturalWidth` de imagem com `srcset` vem dividido pela densidade: o alerta "dpr3 > 1" da auditoria é falso nesses casos.
-- Lighthouse (no ar, 25/10/2026): computador 100 em desempenho, acessibilidade, boas práticas e SEO; celular 86–87 em
-  desempenho e 100 no resto. Rodar com `TEMP`/`TMP` apontando para `C:\Users\Public\...` (mesmo problema do perfil).
-  O que segura o celular: a página é montada pelo JavaScript (FCP ~2,3 s no 4G simulado). Próximo passo para passar de
-  90: pré-renderizar o HTML no build e usar `hydrateRoot` (com `createRoot` quando a URL tiver filtros ou `?m=`).
+- Lighthouse: rodar com `TEMP`/`TMP` apontando para `C:\Users\Public\...` (mesmo problema do perfil). Local, 26/10/2026,
+  com a pré-renderização: computador 100; celular 88–90 em desempenho e 100 em acessibilidade, boas práticas e SEO.
+- **Pré-renderização sem estragar o LCP** (aprendido na marra): com o HTML pronto, o navegador enxerga todas as fotos e
+  começa a baixar dezenas delas junto com a principal (o celular caiu para 73). Por isso: só a carta de cima da vitrine
+  vem no HTML (as outras entram no `requestIdleCallback`); as seções abaixo da dobra usam `useFotosPerto` (o HTML sai
+  sem as `<img>`, que entram quando a seção chega perto); e o `prerender.mjs` troca a tag do módulo por
+  `modulepreload` + um carregador que executa o JS depois do primeiro quadro.
+- Neste PC o Chrome de teste leva ~500 ms para a primeira pintura de qualquer página com conteúdo (pinta por software),
+  com ou sem JS. Não é defeito do site; compare antes e depois na mesma máquina.
+- **Nos testes, role com `window.scrollTo`, não com `scrollIntoView`**: no celular emulado pelo CDP o `scrollIntoView`
+  para 85% da altura da tela antes do alvo (vale também sem o Lenis). A navegação do site (âncoras e marcas) chega certo.
+- **Filho com `position: absolute` escapa do `overflow: hidden` de quem não é posicionado** e alarga a página no Safari
+  (o Chrome esconde por causa do `overflow-x: clip` do `body`). Foi um texto "visualmente oculto" dentro da faixa do
+  Instagram: 331 px de rolagem lateral só no iPhone. `.trilho__janela` agora é `position: relative`.
 - **Não montar animação abaixo da dobra na abertura**: cada `useGSAP` que grava estilo e mede layout força um reflow da
   página inteira. As seções usam `usePerto` (`src/lib/perto.ts`) e só montam perto da tela. Isso tirou o celular de 81
   para 86–87 e o TBT de 460 para ~70–270 ms. O conteúdo do topo não usa opacidade 0 (fica pronto sob a cortina).
@@ -95,5 +133,5 @@ No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicaç
   originais, manter só os nomes: logo oficial é o que costuma gerar notificação e derrubada do site.
 - Logo original da Prime em alta (só existe a do Instagram, 150 px).
 - 206 dos 448 modelos têm nome genérico ("Corrida", "Casual"…): revisar com o Robson.
-- As fotos do fornecedor trazem gravados o código e a REF: fotos próprias dos mais vendidos ou retirar as etiquetas.
+- Fotos próprias dos mais vendidos (as do fornecedor já estão sem etiquetas, mas fotos da loja dão mais confiança).
 - Domínio próprio, Google Analytics com aviso de cookies (medir cliques no WhatsApp) e ficha no Google.

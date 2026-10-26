@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { gsap, useGSAP, Flip, ScrollTrigger, reduzMovimento, rolarPara } from '../lib/gsap';
 import {
   atualizadoEm,
@@ -15,7 +15,7 @@ import {
   type Tenis,
 } from '../lib/catalogo';
 import { loja, whatsappLink, mensagemGeral } from '../lib/loja';
-import { usePerto } from '../lib/perto';
+import { useEfeitoDeLayout, useFotosPerto, usePerto } from '../lib/perto';
 import { CartaoTenis } from './CartaoTenis';
 import { TituloSecao } from './Cadarco';
 import { Trilho } from './Trilho';
@@ -70,6 +70,7 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
   const [barraVisivel, setBarraVisivel] = useState(false);
   const montado = useRef(false);
   const gradePerto = usePerto(grade);
+  const fotosGrade = useFotosPerto(grade, '60%');
 
   // "Ver mais" volta a 24 sempre que o filtro muda
   const chave = `${filtro.linha}|${filtro.marca}|${filtro.modelo}|${filtro.num}|${filtro.busca}`;
@@ -112,7 +113,7 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
 
   // Filtro mudou: os cartões que ficam deslizam, os novos sobem.
   // Na montagem não há o que animar nem medir (o ScrollTrigger já se mede quando a página carrega).
-  useLayoutEffect(() => {
+  useEfeitoDeLayout(() => {
     if (!montado.current) {
       montado.current = true;
       return;
@@ -135,7 +136,7 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
   }, [chave]);
 
   // "Ver mais": só os cartões novos entram
-  useLayoutEffect(() => {
+  useEfeitoDeLayout(() => {
     const antes = anterior.current;
     anterior.current = limite;
     if (limite <= antes || reduzMovimento() || pagina.chave !== chave) return;
@@ -339,8 +340,8 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
         </div>
 
         <ul className="grade" ref={grade}>
-          {visiveis.map((t, i) => (
-            <CartaoTenis key={t.id} t={t} aoAbrir={aoAbrir} prioridade={i < 4} />
+          {visiveis.map((t) => (
+            <CartaoTenis key={t.id} t={t} aoAbrir={aoAbrir} foto={fotosGrade} />
           ))}
         </ul>
 

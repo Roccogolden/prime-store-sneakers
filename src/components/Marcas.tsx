@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { gsap, useGSAP, ScrollTrigger, reduzMovimento } from '../lib/gsap';
-import { usePerto } from '../lib/perto';
+import { useFotosPerto, usePerto } from '../lib/perto';
 import { marcas, porId, srcset, fotoPadrao, totalChuteiras, totalInfantil, type Linha } from '../lib/catalogo';
 import { TituloSecao } from './Cadarco';
 import { Trilho } from './Trilho';
@@ -30,12 +30,14 @@ const COLECOES: { linha: Linha; nome: string; total: number; capa: string }[] = 
   { linha: 'infantil', nome: 'Infantil', total: totalInfantil, capa: 'p406' },
 ];
 
-function Cartao({ capa, nome, total, onClick }: { capa: string; nome: string; total: number; onClick: () => void }) {
+function Cartao({ capa, nome, total, foto, onClick }: { capa: string; nome: string; total: number; foto: boolean; onClick: () => void }) {
   const t = porId.get(capa)!;
   return (
     <button type="button" className="marca-cartao" data-item onClick={onClick} aria-label={`${nome}: ${total} modelos`}>
       <span className="marca-cartao__foto" style={{ background: t.bg }}>
-        <img src={fotoPadrao(t, 400)} srcSet={srcset(t)} sizes="(max-width: 767px) 62vw, 280px" width={t.w} height={t.h} alt="" loading="lazy" draggable={false} />
+        {foto ? (
+          <img src={fotoPadrao(t, 400)} srcSet={srcset(t)} sizes="(max-width: 767px) 62vw, 280px" width={t.w} height={t.h} alt="" loading="lazy" draggable={false} />
+        ) : null}
       </span>
       <span className="marca-cartao__nome">{nome}</span>
       <span className="marca-cartao__total">{total} modelos</span>
@@ -52,6 +54,7 @@ export function Marcas({ aoEscolherMarca, aoEscolherLinha }: Props) {
   const raiz = useRef<HTMLElement>(null);
   const lista = marcas.filter((m) => CAPAS[m.slug]);
   const perto = usePerto(raiz);
+  const fotos = useFotosPerto(raiz);
 
   useGSAP(
     () => {
@@ -78,10 +81,10 @@ export function Marcas({ aoEscolherMarca, aoEscolherLinha }: Props) {
       </div>
       <Trilho rotulo="Marcas" className="trilho--marcas">
         {lista.map((m) => (
-          <Cartao key={m.slug} capa={CAPAS[m.slug]} nome={m.nome} total={m.total} onClick={() => aoEscolherMarca(m.slug)} />
+          <Cartao key={m.slug} capa={CAPAS[m.slug]} nome={m.nome} total={m.total} foto={fotos} onClick={() => aoEscolherMarca(m.slug)} />
         ))}
         {COLECOES.map((c) => (
-          <Cartao key={c.linha} capa={c.capa} nome={c.nome} total={c.total} onClick={() => aoEscolherLinha(c.linha)} />
+          <Cartao key={c.linha} capa={c.capa} nome={c.nome} total={c.total} foto={fotos} onClick={() => aoEscolherLinha(c.linha)} />
         ))}
       </Trilho>
     </section>

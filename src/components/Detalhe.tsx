@@ -14,7 +14,7 @@ import {
   type Tenis,
 } from '../lib/catalogo';
 import { loja, whatsappLink } from '../lib/loja';
-import { IconeAnterior, IconeCompartilhar, IconeFechar, IconeProximo, IconeWhatsapp } from './Icones';
+import { IconeAnterior, IconeBusca, IconeCompartilhar, IconeFechar, IconeProximo, IconeWhatsapp } from './Icones';
 import { Trilho } from './Trilho';
 
 interface Props {
@@ -111,8 +111,26 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
     return () => window.removeEventListener('keydown', tecla);
   });
 
-  // Deslizar a foto troca de tênis
+  // Deslizar a foto troca de tênis; tocar (ou clicar) amplia, e com a foto ampliada o dedo/mouse passeia por ela
   const toque = useRef<{ x: number; y: number } | null>(null);
+  const zoomRef = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState(false);
+  useEffect(() => setZoom(false), [id]);
+
+  function mirar(e: React.PointerEvent) {
+    const el = zoomRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - r.top) / r.height) * 100));
+    el.style.transformOrigin = `${x}% ${y}%`;
+  }
+
+  function alternarZoom(ligar: boolean, e?: React.PointerEvent) {
+    if (ligar && e) mirar(e);
+    else if (zoomRef.current) zoomRef.current.style.transformOrigin = '50% 50%';
+    setZoom(ligar);
+  }
 
   async function compartilhar() {
     const url = linkDoTenis(t);
@@ -146,28 +164,41 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
         </div>
         <div className="detalhe__rolagem" data-lenis-prevent>
           <figure
-            className="detalhe__foto"
+            className={`detalhe__foto${zoom ? ' detalhe__foto--zoom' : ''}`}
             style={{ background: t.bg }}
-            onPointerDown={(e) => (toque.current = { x: e.clientX, y: e.clientY })}
+            onPointerDown={(e) => {
+              toque.current = { x: e.clientX, y: e.clientY };
+              if (zoom && e.pointerType !== 'mouse') mirar(e);
+            }}
+            onPointerMove={(e) => {
+              if (zoom && (e.pointerType === 'mouse' || toque.current)) mirar(e);
+            }}
             onPointerUp={(e) => {
               const ini = toque.current;
               toque.current = null;
-              if (!ini) return;
+              if (!ini || (e.target as HTMLElement).closest('button')) return;
               const dx = e.clientX - ini.x;
-              if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(e.clientY - ini.y)) aoTrocar(dx < 0 ? proximoT.id : anteriorT.id);
+              const dy = e.clientY - ini.y;
+              if (!zoom && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) aoTrocar(dx < 0 ? proximoT.id : anteriorT.id);
+              else if (Math.abs(dx) < 8 && Math.abs(dy) < 8) alternarZoom(!zoom, e);
             }}
           >
-            <img
-              ref={foto}
-              key={t.id}
-              src={fotoPadrao(t, 720)}
-              srcSet={srcset(t)}
-              sizes="(max-width: 899px) 100vw, 560px"
-              width={t.w}
-              height={t.h}
-              alt={descricaoAlt(t)}
-              draggable={false}
-            />
+            <div className="detalhe__zoom" ref={zoomRef}>
+              <img
+                ref={foto}
+                key={t.id}
+                src={fotoPadrao(t, 720)}
+                srcSet={srcset(t)}
+                sizes="(max-width: 899px) 100vw, 560px"
+                width={t.w}
+                height={t.h}
+                alt={descricaoAlt(t)}
+                draggable={false}
+              />
+            </div>
+            <button type="button" className="detalhe__ampliar" onClick={() => alternarZoom(!zoom)} aria-pressed={zoom}>
+              <IconeBusca width={16} height={16} /> {zoom ? 'Voltar ao normal' : 'Ampliar'}
+            </button>
             <button type="button" className="btn-redondo detalhe__seta detalhe__seta--ant" onClick={() => aoTrocar(anteriorT.id)} aria-label="Tênis anterior">
               <IconeAnterior width={20} height={20} />
             </button>

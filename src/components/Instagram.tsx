@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import { loja } from '../lib/loja';
+import { useFotosPerto } from '../lib/perto';
 import { TituloSecao } from './Cadarco';
 import { IconeInstagram } from './Icones';
 import { Trilho } from './Trilho';
@@ -12,8 +14,10 @@ const POSTS = [
 ];
 
 export function Instagram() {
+  const raiz = useRef<HTMLElement>(null);
+  const fotos = useFotosPerto(raiz);
   return (
-    <section className="secao secao--insta" aria-labelledby="insta-titulo">
+    <section className="secao secao--insta" ref={raiz} aria-labelledby="insta-titulo">
       <div className="secao__miolo">
         <TituloSecao id="insta-titulo" sub={`Os lançamentos aparecem primeiro no ${loja.instagram}.`}>
           Novidades no Instagram
@@ -21,8 +25,8 @@ export function Instagram() {
       </div>
       <Trilho rotulo="Posts do Instagram" className="trilho--insta">
         {POSTS.map((p) => (
-          <a key={p.src} className="post" data-item href={loja.instagramUrl} target="_blank" rel="noopener" draggable={false}>
-            <img src={p.src} alt={p.alt} width={480} height={600} loading="lazy" draggable={false} />
+          <a key={p.src} className="post" data-item href={loja.instagramUrl} target="_blank" rel="noopener" draggable={false} aria-label={p.alt}>
+            {fotos ? <img src={p.src} alt="" width={480} height={600} loading="lazy" draggable={false} /> : null}
           </a>
         ))}
         <a className="post post--seguir" data-item href={loja.instagramUrl} target="_blank" rel="noopener" draggable={false}>

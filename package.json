@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
-    "build": "node node_modules/typescript/bin/tsc --noEmit && node node_modules/vite/bin/vite.js build",
+    "build": "node node_modules/typescript/bin/tsc --noEmit && node node_modules/vite/bin/vite.js build && node node_modules/vite/bin/vite.js build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "preview": "node node_modules/vite/bin/vite.js preview",
     "lint": "node node_modules/eslint/bin/eslint.js src",
-    "catalogo": "node scripts/catalogo.mjs"
+    "catalogo": "node scripts/catalogo.mjs",
+    "etiquetas": "node scripts/etiquetas/rodar.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

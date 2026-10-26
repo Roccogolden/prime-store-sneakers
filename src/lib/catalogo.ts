@@ -5,6 +5,8 @@ export type Tipo = 'tenis' | 'chuteira' | 'casual';
 
 export interface Tenis {
   id: string;
+  /** Dia em que a foto entrou no catálogo do fornecedor (AAAA-MM-DD). */
+  desde: string | null;
   marca: string;
   modelo: string;
   tipo: Tipo;
@@ -31,6 +33,14 @@ export function dataCurta(iso: string) {
   const [a, m, d] = iso.split('-');
   return `${d}/${m}/${a}`;
 }
+
+export function diaMes(iso: string) {
+  const [, m, d] = iso.split('-');
+  return `${d}/${m}`;
+}
+
+/** Os que entraram por último no catálogo do fornecedor (a lista já vem do mais novo para o mais antigo). */
+export const novidades = itens.filter((t) => t.desde).slice(0, 14);
 
 export function slug(texto: string) {
   return texto
