@@ -8,7 +8,9 @@ marca, modelo e numeração, e leva o pedido para o WhatsApp do Robson. **Sem pr
 - Instagram: @prime.storego
 - Material do cliente: `../PRIME STORE - SNEAKERS - ROBSON/` (logo 150 px, posts do Instagram, link do catálogo)
 - Estilo pedido pelo cliente: preto com amarelo-ouro, "Seu estilo. / Sua presença.", botões em pílula, três destaques
-  com fio dourado à esquerda (print enviado em 25/10/2026). Os textos do topo vieram desse print.
+  com fio dourado à esquerda (print enviado em 25/10/2026). Os textos do topo vieram desse print; em 30/10/2026 o
+  usuário trocou os três destaques genéricos por fatos do catálogo (nº de modelos, "Do infantil ao 48", entrega na
+  região). O título "Seu estilo. / Sua presença." continua: é o slogan do cliente.
 
 ## Stack e comandos
 Vite + React 18 + TypeScript + GSAP 3.13 (ScrollTrigger, Flip, Draggable, Inertia, DrawSVG) + Lenis. CSS puro com tokens.
@@ -158,4 +160,8 @@ No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicaç
 - Logo original da Prime em alta (só existe a do Instagram, 150 px).
 - 206 dos 448 modelos têm nome genérico ("Corrida", "Casual"…): revisar com o Robson.
 - Fotos próprias dos mais vendidos (as do fornecedor já estão sem etiquetas, mas fotos da loja dão mais confiança).
-- Domínio próprio, Google Analytics com aviso de cookies (medir cliques no WhatsApp) e ficha no Google.
+- **Domínio `primestoresneakers.com` comprado na Hostinger em 30/10/2026** (negócio fechado com o Robson). Falta ligar
+  à Vercel e trocar o DNS (A `@` e CNAME `www`). Só depois que o domínio abrir com HTTPS: trocar `siteUrl`
+  (`src/lib/loja.ts`), `index.html` (canonical, og, JSON-LD), `public/robots.txt` e `public/sitemap.xml`, e redirecionar
+  o `.vercel.app` para o domínio. Antes disso, não: os links `/?m=` das mensagens de WhatsApp quebrariam.
+- Google Analytics com aviso de cookies (medir cliques no WhatsApp) e ficha no Google.

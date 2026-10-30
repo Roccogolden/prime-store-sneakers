@@ -1,13 +1,16 @@
 import { useRef } from 'react';
+import { itens } from '../lib/catalogo';
 import { gsap, useGSAP, reduzMovimento, rolarPara } from '../lib/gsap';
 import { EVENTO_ABERTURA_SAINDO } from './Abertura';
 import { IconeSeta } from './Icones';
 import { Vitrine } from './Vitrine';
 
+// Fatos do catálogo, no lugar das frases genéricas do print (pedido do usuário em 30/10/2026).
 const DESTAQUES = [
-  { titulo: 'Estilo marcante', texto: 'Modelos para compor seu visual' },
-  { titulo: 'Atendimento direto', texto: 'Tire suas dúvidas com a loja' },
-  { titulo: 'Escolha seu par', texto: 'Consulte tamanhos disponíveis' },
+  { titulo: `${itens.length} modelos`, texto: 'Tênis, chuteiras e infantil' },
+  // espaço inseparável: no celular o "48" ficava sozinho na linha
+  { titulo: 'Do infantil ao 48', texto: 'Filtre pela sua numeração' },
+  { titulo: 'Entrega na região', texto: 'Aparecida e arredores' },
 ];
 
 export function Hero({ aoAbrir }: { aoAbrir: (id: string) => void }) {
