@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { gsap, useGSAP, ScrollTrigger, pausarRolagem } from '../lib/gsap';
-import { CadarcoAbertura } from './Cadarco';
 
 export const EVENTO_ABERTURA_SAINDO = 'prime:abertura-saindo';
 
@@ -9,17 +8,15 @@ function sinalizarSaida() {
   window.dispatchEvent(new Event(EVENTO_ABERTURA_SAINDO));
 }
 
-const PRIME = ['P', 'R', 'I', 'M', 'E'];
-/** Raio dos anéis no viewBox 0 0 200 200 do emblema. */
-const R_EXT = 96;
-const R_INT = 89;
-
 /**
- * Abertura "o ilhós se abre": um brilho dourado acende, dois anéis finos se desenham (a moldura da logo,
- * o ilhós do tênis), o cadarço cruza e dá o laço lá dentro e o nome sobe letra por letra. No fim, um furo
- * redondo nasce no anel e cresce até revelar o site, com os anéis acompanhando a borda do furo.
- * Completa (~3,4 s) na primeira visita da sessão, curta (~0,8 s) ao recarregar, nenhuma com "reduzir movimento".
- * O <head> decide (classes has-intro e intro-curta) e solta a página sozinho em 7 s se o JS falhar.
+ * Abertura "a caixa do tênis": a tampa preta com o nome impresso, amarrada com o cadarço dourado, já vem no HTML
+ * (aparece antes do JS, com um reflexo de luz passando por ela). Quando o JS chega, o laço aperta, se desfaz, o
+ * cadarço é puxado para fora da tela, uma fresta de luz acende na borda e a tampa sobe: a loja está lá dentro.
+ * Fecha com o laço que se amarra no botão do WhatsApp no fim da página (Cadarco.tsx).
+ * Completa (~2,2 s) na primeira visita da sessão, curta (~0,9 s) ao recarregar ou quando o JS chega depois de 1,8 s
+ * (internet lenta: a caixa já ficou na tela enquanto carregava), nenhuma com "reduzir movimento"
+ * ou link de tênis (?m=). O <head> decide (classes has-intro e intro-curta) e solta a página sozinho em 7 s se o
+ * JS falhar; quando o JS assume, esse prazo é cancelado para não cortar a animação no meio.
  */
 export function Abertura() {
   const raiz = useRef<HTMLDivElement>(null);
@@ -31,41 +28,19 @@ export function Abertura() {
         sinalizarSaida();
         return;
       }
-      const curta = html.classList.contains('intro-curta');
-      const el = raiz.current!;
-      const q = gsap.utils.selector(el);
+      clearTimeout((window as unknown as { __soltarAbertura?: number }).__soltarAbertura);
+      // Internet lenta: quem já ficou olhando a caixa enquanto a página carregava não precisa do show inteiro
+      const curta = html.classList.contains('intro-curta') || performance.now() > 1800;
+      const q = gsap.utils.selector(raiz);
       pausarRolagem(true);
 
-      const centro = q('.abertura__centro')[0];
-      const emblema = q('.abertura__emblema')[0];
-      const [anelExt, anelInt] = q('.abertura__aneis circle') as unknown as SVGCircleElement[];
-      const ilhos = q('.abertura__ilhos circle');
-      const [barra, zigA, zigB] = q('.abertura__lacos path');
-      const laco = q('.abertura__laco path');
-      const letras = q('.abertura__letra');
-      const store = q('.abertura__store');
-      const regua = q('.abertura__regua');
-      const brilho = q('.abertura__brilho');
-
-      // O furo: máscara radial na própria cortina, centrada no emblema
-      const furo = { r: 0 };
-      let cx = 0, cy = 0, r0 = 1, rMax = 1, unidade = 1;
-      const medir = () => {
-        const b = emblema.getBoundingClientRect();
-        cx = b.left + b.width / 2;
-        cy = b.top + b.height / 2;
-        unidade = b.width / 200; // px por unidade do viewBox
-        r0 = R_INT * unidade;
-        rMax = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy)) + 4;
-      };
-      const pintarFuro = () => {
-        const m = `radial-gradient(circle at ${cx}px ${cy}px, transparent ${furo.r}px, #000 ${furo.r + 1.5}px)`;
-        el.style.setProperty('-webkit-mask-image', m);
-        el.style.setProperty('mask-image', m);
-        // os anéis vão junto com a borda do furo, logo do lado de fora
-        anelInt.setAttribute('r', String((furo.r + 3) / unidade));
-        anelExt.setAttribute('r', String((furo.r + 3) / unidade + (R_EXT - R_INT)));
-      };
+      const tampa = q('.abertura__tampa')[0];
+      const caixa = q('.abertura__caixa')[0];
+      const laco = q('.abertura__laco')[0];
+      const fita = q('.abertura__fita')[0];
+      const alcas = q('.abertura__alca');
+      const fresta = q('.abertura__fresta')[0];
+      const reflexo = q('.abertura__reflexo')[0];
 
       const EVENTOS = ['pointerdown', 'wheel', 'touchstart', 'keydown'] as const;
       const pular = () => {
@@ -80,72 +55,42 @@ export function Abertura() {
         onComplete: () => {
           soltar();
           html.classList.remove('has-intro', 'intro-curta');
-          el.style.removeProperty('-webkit-mask-image');
-          el.style.removeProperty('mask-image');
           pausarRolagem(false);
           ScrollTrigger.refresh();
         },
       });
 
-      if (curta) {
-        gsap.set(brilho, { autoAlpha: 1 });
-        gsap.set([anelExt, anelInt, barra, zigA, zigB, ...laco], { drawSVG: '100%' });
-      } else {
-        gsap.set(brilho, { autoAlpha: 0, scale: 0.85 });
-        gsap.set(anelExt, { drawSVG: '0%', rotation: -90, transformOrigin: '50% 50%' });
-        gsap.set(anelInt, { drawSVG: '50% 50%', rotation: -90, transformOrigin: '50% 50%' });
-        gsap.set([barra, zigA, zigB, ...laco], { drawSVG: '0%' });
-        gsap.set(ilhos, { scale: 0, transformOrigin: '50% 50%' });
-        gsap.set(letras, { yPercent: 115 });
-        gsap.set(store, { autoAlpha: 0, letterSpacing: '1.1em' });
-        gsap.set(regua, { scaleX: 0 });
+      // a tampa sobe pela borda da frente (a de baixo), girando em volta da de trás
+      gsap.set(tampa, { transformPerspective: 1400, transformOrigin: '50% 0%' });
+      // o cadarço sai inteiro para a direita: o laço vai junto com a fita
+      const puxar = () => window.innerWidth * 1.08;
 
-        tl.to(brilho, { autoAlpha: 1, scale: 1, duration: 1.4, ease: 'sine.inOut' }, 0)
-          .to(anelExt, { drawSVG: '100%', duration: 0.95, ease: 'power2.inOut' }, 0.05)
-          .to(anelInt, { drawSVG: '0% 100%', duration: 0.85, ease: 'power2.inOut' }, 0.25)
-          .to(ilhos, { scale: 1, duration: 0.35, stagger: { each: 0.035, from: 'end' }, ease: 'back.out(2.6)' }, 0.5)
-          .to(barra, { drawSVG: '100%', duration: 0.26, ease: 'power2.inOut' }, 0.72)
-          .to([zigA, zigB], { drawSVG: '100%', duration: 0.85, ease: 'power2.inOut' }, 0.88)
-          .to(laco.slice(0, 2), { drawSVG: '100%', duration: 0.2, ease: 'power1.out' }, 1.68)
-          .to(laco.slice(2, 4), { drawSVG: '100%', duration: 0.45, ease: 'elastic.out(1, 0.55)', stagger: 0.05 }, 1.84)
-          .to(laco.slice(4), { drawSVG: '100%', duration: 0.3, ease: 'power2.out', stagger: 0.05 }, 1.96)
-          .to(letras, { yPercent: 0, duration: 0.75, ease: 'expo.out', stagger: 0.045 }, 1.55)
-          .to(store, { autoAlpha: 1, letterSpacing: '0.44em', duration: 0.75 }, 1.9)
-          .to(regua, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 2.0);
+      if (curta) {
+        tl.to([fita, laco], { x: puxar, duration: 0.4, ease: 'power3.in' }, 0).addLabel('abre', 0.25);
+      } else {
+        // 1. alguém segura a ponta: o laço aperta (antecipação)
+        tl.to(laco, { scale: 0.9, duration: 0.28, ease: 'power2.in' }, 0.25)
+          // 2. as alças se desfazem para dentro do nó
+          .to(alcas, { drawSVG: '0% 0%', duration: 0.4, ease: 'power2.in', stagger: 0.07 }, 0.5)
+          // 3. o cadarço é puxado para fora, acelerando; a fita afina com a velocidade
+          .to([fita, laco], { x: puxar, duration: 0.6, ease: 'power3.in' }, 0.88)
+          .to(fita, { scaleY: 0.6, duration: 0.6, ease: 'power3.in' }, 0.88)
+          .to(reflexo, { autoAlpha: 0, duration: 0.4 }, 0.9)
+          // 4. a fresta: a luz de dentro da caixa acende na borda enquanto o cadarço ainda sai
+          .to(fresta, { autoAlpha: 1, duration: 0.28, ease: 'power2.out' }, 1.18)
+          .addLabel('abre', 1.4);
       }
 
-      tl.addLabel('abre', curta ? 0.12 : 2.45)
-        .call(
-          () => {
-            medir();
-            // o tracejado do DrawSVG tem o comprimento do anel original: traço contínuo para ele poder crescer
-            for (const a of [anelExt, anelInt]) {
-              a.style.strokeDasharray = 'none';
-              a.style.strokeDashoffset = '0';
-            }
-            furo.r = r0 * 0.94;
-            pintarFuro();
-            sinalizarSaida();
-          },
-          undefined,
-          'abre',
-        )
-        .to(furo, { r: () => rMax, duration: curta ? 0.7 : 0.95, ease: 'power3.inOut', onUpdate: pintarFuro }, 'abre')
-        .to(q('.abertura__cadarco, .abertura__nome'), { autoAlpha: 0, scale: 1.1, duration: 0.4, ease: 'power2.in' }, 'abre')
-        .to(brilho, { autoAlpha: 0, duration: 0.5, ease: 'power1.in' }, 'abre')
-        .to([anelExt, anelInt], { autoAlpha: 0, duration: 0.3, ease: 'power1.in' }, curta ? 'abre+=0.45' : 'abre+=0.7');
+      // 5. a tampa levanta e sai; a loja aparece dentro da caixa, cujas bordas somem em seguida
+      tl.call(sinalizarSaida, undefined, 'abre')
+        .to(tampa, { scale: 1.03, duration: 0.22, ease: 'power2.out' }, 'abre')
+        .to(tampa, { yPercent: -112, rotationX: 9, duration: curta ? 0.6 : 0.72, ease: 'power2.in' }, curta ? 'abre' : 'abre+=0.06')
+        .to(caixa, { autoAlpha: 0, duration: 0.55, ease: 'power1.inOut' }, curta ? 'abre+=0.35' : 'abre+=0.5');
 
-      gsap.set(centro, { visibility: 'visible' });
       EVENTOS.forEach((ev) => window.addEventListener(ev, pular, { passive: true }));
-
-      const fontes = document.fonts?.load ? document.fonts.load('800 40px "Archivo"') : Promise.resolve();
-      let vivo = true;
-      Promise.race([fontes, new Promise((r) => setTimeout(r, 1200))]).then(() => {
-        if (vivo) tl.play();
-      });
+      tl.play();
 
       return () => {
-        vivo = false;
         soltar();
         pausarRolagem(false);
       };
@@ -155,26 +100,33 @@ export function Abertura() {
 
   return (
     <div ref={raiz} className="abertura" aria-hidden="true">
-      <div className="abertura__brilho" />
-      <div className="abertura__centro">
-        <div className="abertura__emblema">
-          <svg className="abertura__aneis" viewBox="0 0 200 200">
-            <circle className="abertura__anel" cx="100" cy="100" r={R_EXT} />
-            <circle className="abertura__anel abertura__anel--interno" cx="100" cy="100" r={R_INT} />
+      <div className="abertura__caixa" />
+      <div className="abertura__tampa">
+        <div className="abertura__face">
+          <i className="abertura__reflexo" />
+          <i className="abertura__fresta" />
+          <p className="abertura__nome">
+            <span className="abertura__prime">PRIME</span>
+            <span className="abertura__store">STORE</span>
+          </p>
+          <i className="abertura__fita" />
+          <svg className="abertura__laco" viewBox="-80 -50 160 100">
+            <defs>
+              <linearGradient id="abertura-ouro" gradientUnits="userSpaceOnUse" x1="0" y1="-44" x2="0" y2="50">
+                <stop offset="0" stopColor="#ffd877" />
+                <stop offset="0.55" stopColor="#f3b932" />
+                <stop offset="1" stopColor="#c98f1c" />
+              </linearGradient>
+            </defs>
+            <path className="abertura__ponta" d="M-2 2 C-10 16 -18 30 -30 44" />
+            <path className="abertura__ponta" d="M2 2 C12 14 22 28 36 40" />
+            <path className="abertura__agulheta" d="M-30 44 L-36 52" />
+            <path className="abertura__agulheta" d="M36 40 L43 47" />
+            <path className="abertura__alca" d="M0 0 C-14 -26 -50 -40 -64 -24 C-76 -10 -56 8 -30 4 C-16 2 -6 1 0 0" />
+            <path className="abertura__alca" d="M0 0 C14 -26 50 -40 64 -24 C76 -10 56 8 30 4 C16 2 6 1 0 0" />
+            <rect className="abertura__no" x="-9" y="-8" width="18" height="16" rx="7" />
           </svg>
-          <CadarcoAbertura />
         </div>
-        <p className="abertura__nome">
-          <span className="abertura__prime">
-            {PRIME.map((l, i) => (
-              <span key={i} className="abertura__letra">
-                {l}
-              </span>
-            ))}
-          </span>
-          <span className="abertura__store">STORE</span>
-          <i className="abertura__regua" />
-        </p>
       </div>
     </div>
   );

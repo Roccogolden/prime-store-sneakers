@@ -4,7 +4,7 @@ import { usePerto } from '../lib/perto';
 
 /**
  * Assinatura da marca: o cadarço dourado.
- * Abertura: o cadarço cruza os ilhós e dá o laço. Ao longo: este marcador entra
+ * Abertura: o laço da caixa do tênis se desfaz e a tampa sobe (Abertura.tsx). Ao longo: este marcador entra
  * antes de cada título. Fechamento: o laço se amarra em volta do botão do WhatsApp.
  */
 
@@ -52,36 +52,6 @@ export function TituloSecao({ id, children, sub }: { id?: string; children: Reac
       <h2 id={id}>{children}</h2>
       {sub ? <p className="titulo-secao__sub">{sub}</p> : null}
     </header>
-  );
-}
-
-/** Desenho da abertura: ilhós em duas colunas, cadarço cruzado de baixo para cima e o laço no topo. */
-export function CadarcoAbertura() {
-  const ilhos = [30, 62, 94, 126].flatMap((y) => [
-    [44, y],
-    [116, y],
-  ]);
-  return (
-    <svg className="abertura__cadarco" viewBox="0 0 160 150" aria-hidden="true">
-      <g className="abertura__lacos">
-        <path d="M44 126 L116 126" />
-        <path d="M44 126 L116 94 L44 62 L116 30" />
-        <path d="M116 126 L44 94 L116 62 L44 30" />
-      </g>
-      <g className="abertura__ilhos">
-        {ilhos.map(([x, y]) => (
-          <circle key={`${x}-${y}`} cx={x} cy={y} r="5" />
-        ))}
-      </g>
-      <g className="abertura__laco">
-        <path d="M44 30 Q62 22 80 18" />
-        <path d="M116 30 Q98 22 80 18" />
-        <path d="M80 18 C66 -2 40 2 48 14 C54 22 70 20 80 18" />
-        <path d="M80 18 C94 -2 120 2 112 14 C106 22 90 20 80 18" />
-        <path d="M80 18 C76 30 70 40 62 50" />
-        <path d="M80 18 C84 30 90 40 98 50" />
-      </g>
-    </svg>
   );
 }
 

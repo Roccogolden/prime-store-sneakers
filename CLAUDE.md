@@ -96,18 +96,50 @@ dourado em degradê por cor chapada: não foi usado, para não alterar a marca. 
 ## Identidade
 - Cores: preto `#0B0B0C`, grafite `#151517`/`#1F1F22`, amarelo-ouro `#F3B932` (botões), ouro velho `#C9A253` (logo,
   detalhes), marfim `#F6F2EA`. Fontes: Archivo (títulos, eixo de largura) + Outfit (texto), hospedadas em `public/fontes`.
-- **Assinatura: o cadarço dourado.** Abertura "o ilhós se abre" (refeita em 25/10/2026 a pedido do usuário, ~3,4 s):
-  um brilho dourado acende, dois anéis finos se desenham (a moldura da logo / o ilhós), os ilhós aparecem, o cadarço
-  cruza e dá o laço dentro do anel, "PRIME" sobe letra por letra e "STORE" se fecha; então um furo redondo nasce no anel
-  e cresce até revelar o site (máscara radial na cortina, com os anéis acompanhando a borda). Completa na 1ª visita da
-  sessão, curta ao recarregar (~0,8 s), nenhuma com link `?m=` ou "reduzir movimento"; pula com toque, rolagem ou tecla.
+- **Assinatura: o cadarço dourado.** Abertura "a caixa do tênis" (30/10/2026, pedido do usuário: "mais incrível";
+  substituiu "o ilhós se abre"): a tampa preta com "PRIME STORE" impresso, amarrada com o cadarço chato dourado (trama
+  em diagonal) e um laço com agulhetas, **já vem no HTML pré-renderizado** e aparece no primeiro quadro, com um reflexo
+  de luz em CSS passando por ela enquanto o JS carrega. Com o JS: o laço aperta, as alças se desfazem para dentro do nó
+  (DrawSVG), o cadarço é puxado para fora pela direita, a fresta de luz acende na borda e a tampa sobe (girando em volta
+  da borda de trás); a loja aparece dentro da caixa, cujas bordas somem em seguida. Completa (~2,2 s) na 1ª visita da
+  sessão; curta (~0,9 s) ao recarregar **ou quando o JS chega depois de 1,8 s** (internet lenta: a caixa já ficou na
+  tela); nenhuma com link `?m=` ou "reduzir movimento"; pula com toque, rolagem ou tecla. O `<head>` guarda o prazo de
+  segurança de 7 s em `window.__soltarAbertura`, e o JS o cancela ao assumir (antes, ele cortava a animação no meio).
+  Medido no 4G lento simulado (Fast 4G + CPU 4×): a caixa pinta em ~1,0 s e a loja fica livre em ~3,6 s a partir da
+  resposta (a antiga: tela escura até o JS e ~4,8 s).
   Ao longo: marcador de cadarço antes de cada título; "Como pedir" são ilhós ligados pelo cadarço. Fechamento: o cadarço
-  contorna o botão "Chamar no WhatsApp" e dá o laço; o botão aperta. 404: o cadarço incompleto.
+  contorna o botão "Chamar no WhatsApp" e dá o laço; o botão aperta (o site abre desamarrando e fecha amarrando).
+  404: o cadarço incompleto.
+- **Fechamento em bloco amarelo** (30/10/2026, da pesquisa de premiados: "uma cor usada com coragem"): fundo `--ouro`,
+  título e texto pretos, botão `btn--escuro` (preto com letra amarela) e o laço em preto. **Rodapé** termina com a
+  assinatura (pedido do usuário, 30/10/2026): a logo (selo de 52 a 80 px: a de 150 px não aguenta mais que isso no
+  iPhone) sobre "PRIME" de ponta a ponta (Archivo 900, dourado que se apaga para baixo; `min(21vw, 17rem)` cabe de 358 a
+  1160 px). As letras sobem de trás da borda, a logo aparece por cima e um reflexo de luz passa pela logo e depois pela
+  palavra (elipse cor de champanhe; variável `--brilho` animada pelo GSAP, `--x` de cada letra para ele seguir contínuo);
+  repete a cada 6 s só com o rodapé na tela. O bloco pequeno "logo + PRIME STORE + cidade" saiu do rodapé (o usuário
+  achou repetido com o cabeçalho fixo); a cidade foi para a linha do ©.
+- **Fonte da tampa:** a família `Archivo Tampa` (mesmo arquivo da Archivo, `font-display: block`) faz o nome impresso
+  na tampa esperar a fonte em vez de trocar na frente da pessoa. Não use `<link rel=preload>` na fonte: o motor do
+  Safari baixava o arquivo duas vezes (conferido no Playwright, 30/10/2026).
+- **No celular e no tablet o tênis vem logo depois do título** (`display: contents` no `.hero__conteudo` + `order`): a
+  primeira tela mostra o slogan e a vitrine; texto, botões e destaques descem. A ordem do HTML continua a do computador.
+- **Sacola** (30/10/2026): o cliente separa vários pares ("Pôr na sacola" no detalhe, com a numeração) e manda tudo
+  numa mensagem só para o Robson (`mensagemDaSacola`, termina pedindo valores e disponibilidade). **Sem preço e sem
+  pagamento no site** (decisão do usuário: o site é catálogo e a negociação é no WhatsApp). Guardada no `localStorage`
+  (`prime-sacola`, até 20 pares; some sozinho o tênis que sair do catálogo). O botão da sacola só aparece no topo com
+  algum par. Tem entrada no histórico (o "voltar" do celular fecha a gaveta); aberta de dentro do detalhe, ela toma o
+  lugar dele no histórico. Detalhe e sacola travam a página com `travarPagina()` (contador: uma janela fechando não
+  solta a página com a outra aberta).
 - Movimento: vitrine em pilha que se arrasta e joga (Draggable + Inertia), faixa de marcas que acelera com a rolagem,
   "Chegaram agora" (os 14 que entraram por último no catálogo, com o dia), filtros com Flip, cartões que "pousam" ao
   entrar, foto do tênis que amplia 2,2× no toque/clique e passeia com o dedo/mouse. Nada das revelações do portfólio.
 
 ## Verificação (aprendido aqui)
+- **Ver a abertura quadro a quadro:** no `initScript` do chrome-devtools, troque `Date.now` por um relógio mais lento
+  (o ticker do GSAP usa `Date.now`): `var r=Date.now,b=r();Date.now=function(){return b+(r()-b)*0.05}`. Em velocidade
+  real: `screencast_start`/`stop` (mp4) e `ffmpeg -vf fps=12` para tirar os quadros e montar uma folha de contato.
+- Teste com parâmetro estranho na URL (ex.: `?semcache=1`) muda o caminho da montagem (`createRoot` em vez de hidratar):
+  para medir a abertura, use a URL limpa.
 - Chrome de teste com perfil dentro do Temp do usuário ("HUIAT&~1") leva ~6 s no primeiro `sessionStorage` e infla o
   LCP. Para medir tempo, use perfil em caminho simples (ex.: `C:/Users/Public/...`). Fora do teste não acontece.
 - Grade com faixas `max-content` dentro: use `grid-template-columns: minmax(0, 1fr)` ou a página alarga.

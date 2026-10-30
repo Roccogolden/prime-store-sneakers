@@ -50,7 +50,8 @@
 
     <script>
       // Abertura: completa na 1ª visita da sessão, curta ao recarregar, nenhuma com "reduzir movimento"
-      // ou quando o link já aponta para um tênis (?m=). Se o JS da página falhar, a tela se solta em 7 s.
+      // ou quando o link já aponta para um tênis (?m=). Se o JS da página falhar, a tela se solta em 7 s
+      // (o JS cancela esse prazo quando assume a animação).
       (function () {
         try {
           var h = document.documentElement;
@@ -65,7 +66,7 @@
           var curta = visto || (nav && nav.type === 'reload');
           h.classList.add('has-intro');
           if (curta) h.classList.add('intro-curta');
-          setTimeout(function () {
+          window.__soltarAbertura = setTimeout(function () {
             h.classList.remove('has-intro', 'intro-curta');
           }, 7000);
         } catch (e) {}

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { filtrar, filtroVazio, porId, type Filtro, type Linha } from './lib/catalogo';
 import { rolarPara } from './lib/gsap';
+import { MAXIMO_SACOLA, useSacola } from './lib/sacola';
 import { Abertura } from './components/Abertura';
 import { Cabecalho } from './components/Cabecalho';
 import { Hero } from './components/Hero';
@@ -14,6 +15,7 @@ import { Fechamento } from './components/Fechamento';
 import { Rodape } from './components/Rodape';
 import { BotaoWhatsapp } from './components/BotaoWhatsapp';
 import { Detalhe } from './components/Detalhe';
+import { Sacola } from './components/Sacola';
 
 const LINHAS: Linha[] = ['todos', 'tenis', 'chuteiras', 'infantil'];
 
@@ -48,6 +50,8 @@ export default function App() {
   const inicial = useMemo(lerUrl, []);
   const [filtro, setFiltro] = useState<Filtro>(inicial.filtro);
   const [aberto, setAberto] = useState<string | null>(inicial.aberto);
+  const [sacolaAberta, setSacolaAberta] = useState(false);
+  const sacola = useSacola();
   const lista = useMemo(() => filtrar(filtro), [filtro]);
 
   // Filtros ficam no endereço (dá para mandar o link filtrado)
@@ -55,9 +59,12 @@ export default function App() {
     window.history.replaceState(window.history.state, '', montarUrl(filtro, aberto));
   }, [filtro, aberto]);
 
-  // Voltar do navegador (ou o gesto do celular) fecha o detalhe
+  // Voltar do navegador (ou o gesto do celular) fecha o detalhe e a sacola
   useEffect(() => {
-    const aoVoltar = () => setAberto(lerUrl().aberto);
+    const aoVoltar = () => {
+      setAberto(lerUrl().aberto);
+      setSacolaAberta(Boolean(window.history.state?.sacola));
+    };
     window.addEventListener('popstate', aoVoltar);
     return () => window.removeEventListener('popstate', aoVoltar);
   }, []);
@@ -98,13 +105,38 @@ export default function App() {
     else setAberto(null);
   }, []);
 
+  // A sacola também ganha uma entrada no histórico (o "voltar" do celular fecha a gaveta, não sai do site).
+  // Aberta de dentro do detalhe, ela toma o lugar dele no histórico, e o detalhe sai por baixo depois que ela cobre a tela.
+  const abrirSacola = useCallback(() => {
+    const p = new URLSearchParams(window.location.search);
+    p.delete('m');
+    const s = p.toString();
+    const url = `${window.location.pathname}${s ? `?${s}` : ''}${window.location.hash}`;
+    if (window.history.state?.detalhe) window.history.replaceState({ sacola: true }, '', url);
+    else window.history.pushState({ sacola: true }, '', url);
+    setSacolaAberta(true);
+    setTimeout(() => setAberto(null), 420);
+  }, []);
+
+  const fecharSacola = useCallback(() => {
+    if (window.history.state?.sacola) window.history.back();
+    else setSacolaAberta(false);
+  }, []);
+
+  // chamada depois que a gaveta saiu: espera a página destravar para rolar
+  const verCatalogoDaSacola = useCallback(() => {
+    setTimeout(() => rolarPara('#catalogo'), 200);
+  }, []);
+
+  const itemAberto = aberto ? sacola.itens.find((x) => x.id === aberto) : undefined;
+
   return (
     <>
       <a className="pular" href="#catalogo">
         Pular para o catálogo
       </a>
       <Abertura />
-      <Cabecalho />
+      <Cabecalho totalSacola={sacola.itens.length} aoAbrirSacola={abrirSacola} />
       <main>
         <Hero aoAbrir={abrir} />
         <FaixaMarcas aoEscolher={escolherMarca} />
@@ -116,8 +148,32 @@ export default function App() {
         <Fechamento />
       </main>
       <Rodape />
-      <BotaoWhatsapp escondido={aberto !== null} />
-      {aberto ? <Detalhe id={aberto} sequencia={lista} numPreferida={filtro.num} aoTrocar={trocar} aoFechar={fechar} /> : null}
+      <BotaoWhatsapp escondido={aberto !== null || sacolaAberta} />
+      {aberto ? (
+        <Detalhe
+          id={aberto}
+          sequencia={lista}
+          numPreferida={filtro.num}
+          aoTrocar={trocar}
+          aoFechar={fechar}
+          numNaSacola={itemAberto ? itemAberto.num : null}
+          totalSacola={sacola.itens.length}
+          sacolaCheia={sacola.itens.length >= MAXIMO_SACOLA}
+          aoAlternarSacola={sacola.alternar}
+          aoDefinirNumSacola={sacola.definirNum}
+          aoAbrirSacola={abrirSacola}
+        />
+      ) : null}
+      {sacolaAberta ? (
+        <Sacola
+          itens={sacola.itens}
+          aoRemover={sacola.remover}
+          aoDefinirNum={sacola.definirNum}
+          aoLimpar={sacola.limpar}
+          aoFechar={fecharSacola}
+          aoVerCatalogo={verCatalogoDaSacola}
+        />
+      ) : null}
     </>
   );
 }

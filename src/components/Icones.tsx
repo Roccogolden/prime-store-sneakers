@@ -71,3 +71,20 @@ export function IconeCompartilhar(p: P) {
     </svg>
   );
 }
+
+export function IconeSacola(p: P) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...traco} {...p}>
+      <path d="M5.5 8h13l-1.1 12.1a1 1 0 0 1-1 .9H7.6a1 1 0 0 1-1-.9L5.5 8Z" />
+      <path d="M9 10V6.5a3 3 0 0 1 6 0V10" />
+    </svg>
+  );
+}
+
+export function IconeCerto(p: P) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...traco} {...p}>
+      <path d="m5 12.5 4.2 4.2L19 7" />
+    </svg>
+  );
+}

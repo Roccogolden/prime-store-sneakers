@@ -45,6 +45,30 @@ export function pausarRolagem(pausar: boolean) {
   else lenis.start();
 }
 
+let travas = 0;
+
+/**
+ * Trava a página atrás de uma janela (detalhe do tênis, sacola) e devolve a função que solta.
+ * Conta as janelas abertas: quando a sacola abre por cima do detalhe, a saída do detalhe não solta a página.
+ */
+export function travarPagina() {
+  travas += 1;
+  if (travas === 1) {
+    pausarRolagem(true);
+    document.documentElement.classList.add('modal-aberto');
+  }
+  let solta = false;
+  return () => {
+    if (solta) return;
+    solta = true;
+    travas -= 1;
+    if (travas === 0) {
+      pausarRolagem(false);
+      document.documentElement.classList.remove('modal-aberto');
+    }
+  };
+}
+
 /** Rola até um elemento descontando o cabeçalho fixo. */
 export function rolarPara(alvo: string | HTMLElement, deslocamento = -76) {
   const el = typeof alvo === 'string' ? document.querySelector<HTMLElement>(alvo) : alvo;

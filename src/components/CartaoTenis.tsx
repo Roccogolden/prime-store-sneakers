@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { descricaoAlt, fotoPadrao, fundoDesfocado, resumoNumeracoes, srcset, type Tenis } from '../lib/catalogo';
+import { fotoPadrao, fundoDesfocado, resumoNumeracoes, srcset, type Tenis } from '../lib/catalogo';
 
 interface Props {
   t: Tenis;
@@ -14,7 +14,8 @@ export const CartaoTenis = memo(function CartaoTenis({ t, aoAbrir, foto }: Props
   const marca = t.marca === 'Personagens' ? 'Infantil' : t.marca;
   return (
     <li className="cartao" data-id={t.id}>
-      <button type="button" className="cartao__botao" onClick={() => aoAbrir(t.id)} aria-label={`Ver ${descricaoAlt(t)}`}>
+      {/* sem aria-label: o nome lido é o próprio texto do cartão (marca, modelo, cor e numerações) */}
+      <button type="button" className="cartao__botao" onClick={() => aoAbrir(t.id)}>
         <span className={`cartao__foto${inteira ? ' cartao__foto--inteira' : ''}`} style={{ background: inteira && foto ? fundoDesfocado(t) : t.bg }}>
           {foto ? (
             <img

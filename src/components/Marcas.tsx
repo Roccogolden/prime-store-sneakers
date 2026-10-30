@@ -33,7 +33,7 @@ const COLECOES: { linha: Linha; nome: string; total: number; capa: string }[] = 
 function Cartao({ capa, nome, total, foto, onClick }: { capa: string; nome: string; total: number; foto: boolean; onClick: () => void }) {
   const t = porId.get(capa)!;
   return (
-    <button type="button" className="marca-cartao" data-item onClick={onClick} aria-label={`${nome}: ${total} modelos`}>
+    <button type="button" className="marca-cartao" data-item onClick={onClick}>
       <span className="marca-cartao__foto" style={{ background: t.bg }}>
         {foto ? (
           <img src={fotoPadrao(t, 400)} srcSet={srcset(t)} sizes="(max-width: 767px) 62vw, 280px" width={t.w} height={t.h} alt="" loading="lazy" draggable={false} />

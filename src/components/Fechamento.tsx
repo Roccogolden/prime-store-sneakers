@@ -15,7 +15,7 @@ export function Fechamento() {
         </p>
         <div className="fechamento__botoes">
           <LacoNoBotao>
-            <a className="btn btn--ouro btn--grande" href={whatsappLink(mensagemGeral)} target="_blank" rel="noopener">
+            <a className="btn btn--escuro btn--grande" href={whatsappLink(mensagemGeral)} target="_blank" rel="noopener">
               <IconeWhatsapp width={22} height={22} /> Chamar no WhatsApp
             </a>
           </LacoNoBotao>

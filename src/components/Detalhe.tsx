@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { gsap, useGSAP, reduzMovimento, ehCelular, pausarRolagem } from '../lib/gsap';
+import { gsap, useGSAP, reduzMovimento, ehCelular, travarPagina } from '../lib/gsap';
 import {
   atualizadoEm,
   dataCurta,
@@ -15,7 +15,7 @@ import {
   type Tenis,
 } from '../lib/catalogo';
 import { loja, whatsappLink } from '../lib/loja';
-import { IconeAnterior, IconeBusca, IconeCompartilhar, IconeFechar, IconeProximo, IconeWhatsapp } from './Icones';
+import { IconeAnterior, IconeBusca, IconeCerto, IconeCompartilhar, IconeFechar, IconeProximo, IconeSacola, IconeWhatsapp } from './Icones';
 import { Trilho } from './Trilho';
 
 interface Props {
@@ -25,16 +25,37 @@ interface Props {
   numPreferida: string;
   aoTrocar: (id: string) => void;
   aoFechar: () => void;
+  /** Numeração guardada na sacola, se este tênis estiver nela ('' = a combinar); null se não estiver. */
+  numNaSacola: string | null;
+  totalSacola: number;
+  sacolaCheia: boolean;
+  aoAlternarSacola: (id: string, num: string) => void;
+  aoDefinirNumSacola: (id: string, num: string) => void;
+  aoAbrirSacola: () => void;
 }
 
-export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Props) {
+export function Detalhe({
+  id,
+  sequencia,
+  numPreferida,
+  aoTrocar,
+  aoFechar,
+  numNaSacola,
+  totalSacola,
+  sacolaCheia,
+  aoAlternarSacola,
+  aoDefinirNumSacola,
+  aoAbrirSacola,
+}: Props) {
   const t = porId.get(id)!;
   const raiz = useRef<HTMLDivElement>(null);
   const painel = useRef<HTMLDivElement>(null);
   const foto = useRef<HTMLImageElement>(null);
   const fechar = useRef<HTMLButtonElement>(null);
+  const iconeSacola = useRef<HTMLSpanElement>(null);
   const saindo = useRef(false);
-  const [num, setNum] = useState(t.nums.includes(numPreferida) ? numPreferida : t.nums.length === 1 ? t.nums[0] : '');
+  const naSacola = numNaSacola !== null;
+  const [num, setNum] = useState(numNaSacola ?? (t.nums.includes(numPreferida) ? numPreferida : t.nums.length === 1 ? t.nums[0] : ''));
   const [aviso, setAviso] = useState('');
 
   const lista = sequencia.some((x) => x.id === id) ? sequencia : itens;
@@ -43,16 +64,23 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
   const proximoT = lista[(pos + 1) % lista.length];
   const parecidos = itens.filter((x) => x.id !== id && x.marca === t.marca && x.modelo === t.modelo).slice(0, 10);
 
-  // Ao trocar de tênis, a numeração escolhida continua se ele tiver
+  // Ao trocar de tênis, a numeração escolhida continua se ele tiver; se ele já está na sacola, vale a de lá
   useEffect(() => {
-    setNum((atual) => (t.nums.includes(atual) ? atual : t.nums.includes(numPreferida) ? numPreferida : t.nums.length === 1 ? t.nums[0] : ''));
-  }, [t, numPreferida]);
+    setNum(
+      (atual) =>
+        numNaSacola ?? (t.nums.includes(atual) ? atual : t.nums.includes(numPreferida) ? numPreferida : t.nums.length === 1 ? t.nums[0] : ''),
+    );
+  }, [t, numPreferida, numNaSacola]);
+
+  function escolherNum(n: string) {
+    const nova = num === n ? '' : n;
+    setNum(nova);
+    if (naSacola) aoDefinirNumSacola(t.id, nova);
+  }
 
   // Entrada: no celular sobe como gaveta; no computador cresce no centro
-  useGSAP(
+  const { contextSafe } = useGSAP(
     () => {
-      pausarRolagem(true);
-      document.documentElement.classList.add('modal-aberto');
       fechar.current?.focus({ preventScroll: true });
       if (reduzMovimento()) return;
       gsap.from(raiz.current!.querySelector('.detalhe__fundo'), { autoAlpha: 0, duration: 0.3, ease: 'power1.out' });
@@ -62,13 +90,7 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
     { scope: raiz },
   );
 
-  useEffect(
-    () => () => {
-      pausarRolagem(false);
-      document.documentElement.classList.remove('modal-aberto');
-    },
-    [],
-  );
+  useEffect(() => travarPagina(), []);
 
   // Troca de foto com uma passagem curta
   useLayoutEffect(() => {
@@ -132,6 +154,13 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
     else if (zoomRef.current) zoomRef.current.style.transformOrigin = '50% 50%';
     setZoom(ligar);
   }
+
+  // O ícone troca (sacola → certo) com um pulo curto
+  const alternarSacola = contextSafe(() => {
+    aoAlternarSacola(t.id, num);
+    if (reduzMovimento() || !iconeSacola.current) return;
+    gsap.fromTo(iconeSacola.current, { scale: 0.4, rotation: -14 }, { scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(3)' });
+  });
 
   async function compartilhar() {
     const url = linkDoTenis(t);
@@ -219,7 +248,7 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
               <legend>Numerações no catálogo</legend>
               <div className="detalhe__chips">
                 {t.nums.map((n) => (
-                  <button key={n} type="button" className="chip chip--num" aria-pressed={num === n} onClick={() => setNum(num === n ? '' : n)}>
+                  <button key={n} type="button" className="chip chip--num" aria-pressed={num === n} onClick={() => escolherNum(n)}>
                     {n}
                   </button>
                 ))}
@@ -232,9 +261,32 @@ export function Detalhe({ id, sequencia, numPreferida, aoTrocar, aoFechar }: Pro
                 <IconeWhatsapp width={20} height={20} /> Pedir no WhatsApp
               </a>
             </div>
-            <button type="button" className="btn btn--contorno btn--bloco" onClick={compartilhar}>
-              <IconeCompartilhar width={18} height={18} /> {aviso || 'Compartilhar este tênis'}
-            </button>
+            <div className="detalhe__botoes">
+              <button
+                type="button"
+                className={`btn btn--contorno${naSacola ? ' btn--marcado' : ''}`}
+                aria-pressed={naSacola}
+                disabled={!naSacola && sacolaCheia}
+                onClick={alternarSacola}
+              >
+                <span className="detalhe__icone-sacola" ref={iconeSacola}>
+                  {naSacola ? <IconeCerto width={18} height={18} /> : <IconeSacola width={18} height={18} />}
+                </span>
+                {naSacola ? 'Na sacola' : 'Pôr na sacola'}
+              </button>
+              <button type="button" className="btn btn--contorno" onClick={compartilhar}>
+                <IconeCompartilhar width={18} height={18} /> {aviso || 'Compartilhar'}
+              </button>
+            </div>
+            {totalSacola > 0 ? (
+              <p className="detalhe__sacola">
+                {totalSacola === 1 ? '1 par na sacola' : `${totalSacola} pares na sacola`}
+                {' · '}
+                <button type="button" className="link-ouro" onClick={aoAbrirSacola}>
+                  Ver a sacola
+                </button>
+              </p>
+            ) : null}
 
             <p className="detalhe__nota">
               Foto e numerações do catálogo de {dataCurta(atualizadoEm)}. O {loja.atendente} confirma a disponibilidade, o pagamento e a entrega na conversa.

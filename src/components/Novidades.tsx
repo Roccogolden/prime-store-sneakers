@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { gsap, useGSAP, ScrollTrigger, reduzMovimento } from '../lib/gsap';
-import { descricaoAlt, diaMes, fotoPadrao, novidades, srcset } from '../lib/catalogo';
+import { diaMes, fotoPadrao, novidades, srcset } from '../lib/catalogo';
 import { useFotosPerto, usePerto } from '../lib/perto';
 import { TituloSecao } from './Cadarco';
 import { Trilho } from './Trilho';
@@ -37,7 +37,7 @@ export function Novidades({ aoAbrir }: { aoAbrir: (id: string) => void }) {
       </div>
       <Trilho rotulo="Novidades" className="trilho--novidades">
         {novidades.map((t) => (
-          <button key={t.id} type="button" className="novo" data-item onClick={() => aoAbrir(t.id)} aria-label={`Ver ${descricaoAlt(t)}`}>
+          <button key={t.id} type="button" className="novo" data-item onClick={() => aoAbrir(t.id)}>
             <span className="novo__foto" style={{ background: t.bg }}>
               {fotos ? (
                 <img
