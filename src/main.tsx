@@ -20,8 +20,11 @@ const app = (
 );
 
 // O HTML vem pré-renderizado no estado inicial. Sem filtros nem tênis no endereço, o React só "hidrata" a página;
-// com eles, renderiza de novo por cima. Em transição: o trabalho é dividido em fatias e o celular não trava.
+// com eles, renderiza de novo por cima. Parâmetros de origem (?origem=, ?utm_*) não mudam o estado: hidrata também.
+// Em transição: o trabalho é dividido em fatias e o celular não trava.
+const ESTADO_NA_URL = ['linha', 'marca', 'modelo', 'num', 'q', 'm'];
+const comEstado = ESTADO_NA_URL.some((k) => new URLSearchParams(window.location.search).has(k));
 startTransition(() => {
-  if (el.hasChildNodes() && !window.location.search) hydrateRoot(el, app);
+  if (el.hasChildNodes() && !comEstado) hydrateRoot(el, app);
   else createRoot(el).render(app);
 });

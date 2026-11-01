@@ -6,7 +6,7 @@ import { mesmaOrigem, resumo, sorteio, ipDe, lerCorpo } from './_lib/seguranca.j
 
 const VIDA = 60 * 60 * 24 * 400; // as contagens somem sozinhas em ~13 meses
 const ROBO = /bot|crawl|spider|slurp|facebookexternalhit|preview|lighthouse|headlesschrome|python|curl|wget|^whatsapp/i;
-const ORIGENS = new Set(['instagram', 'google', 'facebook', 'whatsapp', 'tiktok', 'direto', 'outros']);
+const ORIGENS = new Set(['instagram', 'google', 'facebook', 'whatsapp', 'tiktok', 'qr', 'direto', 'outros']);
 const ONDE = new Set(['detalhe', 'sacola', 'flutuante', 'fechamento', 'rodape', 'vazio']);
 
 const vazio = () => new Response(null, { status: 204, headers: { 'cache-control': 'no-store' } });

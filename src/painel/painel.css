@@ -891,6 +891,20 @@ a.pn-tenis__linha:hover strong {
   background: var(--grafico);
 }
 
+/* dicas (atalho no celular) */
+.pn-dicas {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--texto-2);
+  font-size: 0.92rem;
+}
+.pn-dicas strong {
+  color: var(--texto);
+  font-weight: 600;
+}
+
 /* vendas */
 .pn-achados {
   gap: 6px;

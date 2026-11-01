@@ -12,6 +12,7 @@ const ORIGENS: Record<string, string> = {
   google: 'Google',
   facebook: 'Facebook',
   tiktok: 'TikTok',
+  qr: 'Cartão (QR code)',
   direto: 'Direto',
   outros: 'Outros sites',
 };
@@ -253,7 +254,7 @@ export function Resumo({ dados, impresso }: { dados: Dados; impresso?: boolean }
           nota="Pelo link ou pelo site que trouxe a pessoa"
           itens={dados.origens.map(([o, n]) => ({ nome: ORIGENS[o] ?? o, n, extra: totalOrigens ? `(${Math.round((n / totalOrigens) * 100)}%)` : undefined }))}
           vazio="Nenhuma visita contada neste período."
-          rodape="Direto: link digitado, salvo ou aberto por um aplicativo que não diz de onde veio (o WhatsApp costuma cair aqui)."
+          rodape="Direto: link digitado, salvo ou aberto por um aplicativo que não diz de onde veio. Os links do kit de divulgação já dizem a origem (WhatsApp, Instagram e o cartão com QR code)."
         />
         <ListaBarras
           titulo="Procuraram e não acharam"

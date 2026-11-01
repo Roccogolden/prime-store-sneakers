@@ -37,6 +37,7 @@ export function origemDaVisita() {
   const marcada = (p.get('utm_source') || p.get('origem') || '').toLowerCase();
   const veio = document.referrer.toLowerCase();
   const de = (s: string) => marcada.includes(s) || veio.includes(s);
+  if (marcada === 'qr' || marcada === 'cartao') return 'qr';
   if (de('instagram')) return 'instagram';
   if (de('whatsapp') || de('wa.me')) return 'whatsapp';
   if (de('google')) return 'google';

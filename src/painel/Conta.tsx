@@ -114,6 +114,23 @@ export function ContaTela({ conta, aoAtualizar, aoSair, aoSessaoCair }: Props) {
       <section className="pn-cartao">
         <div className="pn-cartao__topo">
           <div>
+            <h2>Painel como aplicativo</h2>
+            <p className="pn-cartao__nota">Deixe o painel na tela de início do celular e abra com um toque.</p>
+          </div>
+        </div>
+        <ul className="pn-dicas">
+          <li>
+            <strong>iPhone (Safari):</strong> toque em Compartilhar e depois em “Adicionar à Tela de Início”.
+          </li>
+          <li>
+            <strong>Android (Chrome):</strong> toque nos três pontinhos e depois em “Adicionar à tela inicial”.
+          </li>
+        </ul>
+      </section>
+
+      <section className="pn-cartao">
+        <div className="pn-cartao__topo">
+          <div>
             <h2>Não contar este aparelho</h2>
             <p className="pn-cartao__nota">Marque no seu celular e no seu computador: as suas próprias visitas ao site deixam de entrar nos números.</p>
           </div>
