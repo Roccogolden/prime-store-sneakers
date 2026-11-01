@@ -72,7 +72,7 @@ export function Rodape() {
       <div className="secao__miolo rodape__miolo">
         <ul className="rodape__contatos">
           <li>
-            <a href={whatsappLink(mensagemGeral)} target="_blank" rel="noopener">
+            <a href={whatsappLink(mensagemGeral)} target="_blank" rel="noopener" data-onde="rodape">
               <IconeWhatsapp width={18} height={18} /> {loja.whatsappExibido} · {loja.atendente}
             </a>
           </li>
@@ -84,7 +84,7 @@ export function Rodape() {
         </ul>
         <p className="rodape__nota">
           Catálogo atualizado em {dataCurta(atualizadoEm)}. As fotos vêm do catálogo do fornecedor; a disponibilidade de cada numeração é
-          confirmada no atendimento.
+          confirmada no atendimento. Contamos as visitas de forma anônima, sem cookies.
         </p>
         <p className="rodape__copy">
           © {new Date().getFullYear()} {loja.nome} · {loja.cidade} – {loja.uf}

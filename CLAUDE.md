@@ -180,6 +180,45 @@ dourado em degradê por cor chapada: não foi usado, para não alterar a marca. 
 - O teste dos navegadores pode acusar `NS_BINDING_ABORTED` no Firefox: é o navegador cancelando um download de foto
   (troca de versão do `srcset`). Repita o cenário; se passar, não é defeito.
 
+## Painel do Robson (/painel/)
+Área reservada (01/11/2026, pedido do usuário): visitas, visitantes, chamadas no WhatsApp, sacolas, tênis mais vistos e
+mais pedidos (com as numerações), origem das visitas, buscas sem resultado e as vendas que o Robson anota (valor
+opcional, só ele vê; o site continua sem preço). "Relatório em PDF" monta o relatório na hora e abre a impressão do
+navegador (A4, 3 páginas, papel branco; Ctrl+P também sai com ele).
+- Front: `painel/index.html` + `src/painel/*` (React, `painel.css` próprio), build separado (`vite.painel.config.ts`,
+  último passo do `npm run build`): nada dele entra no JS do site. Sem animação (desenho de ferramenta). Barras em
+  `#C08A1E`, o dourado que passou no validador de cor do dataviz contra o grafite e contra o branco da impressão.
+- API (Vercel Functions, sem dependência nova): `api/painel.js` (uma função só, `?acao=eu|entrar|sair|esqueci|
+  redefinir|conta|dados|venda`) e `api/evento.js` (contador do site); o comum fica em `api/_lib/` (banco Upstash pela
+  API REST, segurança, e-mail pelo Resend). `?acao=eu` responde sempre 200 (`conta: null` sem sessão), para não
+  aparecer erro no console a cada visita à entrada.
+- Medição no site (`src/lib/medir.ts`, sendBeacon, sem cookie): visita (origem por `?origem=`/`utm_source` ou pelo site
+  de onde veio), tênis aberto, toque em link `wa.me` (`data-onde`, `data-tenis`, `data-num`, `data-pares`) e busca sem
+  resultado. Visitante = resumo de IP + navegador + um sal do dia apagado em 2 dias ("cada pessoa conta 1 vez por
+  dia"). As contagens somem em ~13 meses; robôs e pedidos de outros sites são ignorados. "Não contar este aparelho"
+  (aba Conta) grava `prime-nao-contar` no navegador.
+- Segurança: senha em scrypt; sessão em cookie HttpOnly, Secure, SameSite=Strict, `Path=/api/painel`, 30 dias, que cai
+  quando a senha muda; limite de tentativas (entrar 10 em 15 min, esqueci 5 por hora); pedido de outro site barrado;
+  link de senha nova vale 1 h e uma vez; "esqueci" responde igual para qualquer e-mail. `/painel/` com noindex,
+  `X-Frame-Options: DENY` e fora do `robots.txt`.
+- Conta: nasce no primeiro login com `PAINEL_EMAIL`/`PAINEL_SENHA` (variáveis da Vercel). Depois disso as variáveis não
+  valem mais: troca de senha e de e-mail pela aba Conta ou pelo link do e-mail. Venda fora do catálogo: sem tênis, com
+  a descrição obrigatória.
+- Teste local: `npm run build && node scripts/painel-local.mjs 4180 --exemplo` (banco e e-mail de mentira; `--exemplo`
+  põe 44 dias de números INVENTADOS, nunca vão ao ar; o link de senha nova sai no terminal; conta teste@prime.local /
+  senha-teste-123) e `node scripts/testar-painel.mjs` (7 grupos de teste da API). O limite de tentativas vale no teste:
+  muitos logins seguidos dão 429; reinicie o servidor local. Ali o cookie sai sem `Secure` (o WebKit recusa cookie
+  seguro em `http://localhost`); no ar ele é seguro.
+- Conferido em 01/11/2026: Chrome (celular e computador), WebKit (iPhone 13) e Firefox, sem erro no console e sem
+  rolagem lateral; relatório conferido no PdfCraft; uma visita de verdade no site apareceu no painel.
+- **Para ligar (falta, no painel da Vercel, time huiataribeiro-6837):** Storage → Upstash for Redis (grátis) ligado ao
+  projeto `prime-store-sneakers` (cria `KV_REST_API_URL`/`KV_REST_API_TOKEN`); variáveis `PAINEL_EMAIL` e `PAINEL_SENHA`
+  (login de teste); `RESEND_API_KEY` (resend.com, grátis) para o "Esqueci a senha"; opcional `PAINEL_REMETENTE` (depois
+  de verificar o domínio no Resend, com os registros DNS na Hostinger) e `PAINEL_SEGREDO`; depois, Redeploy. Até lá
+  `/painel/` mostra "Painel quase pronto" e o contador do site não grava nada (responde 204).
+- Na troca para o domínio: o "não contar este aparelho" vale por endereço (marcar de novo no domínio novo), e os links
+  do kit de divulgação devem levar `?origem=whatsapp` / `?origem=instagram` para a origem aparecer certa.
+
 ## Publicação
 No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicação autorizada pelo usuário).
 - GitHub: `Roccogolden/prime-store-sneakers` (público, como os outros sites de clientes). O credential helper local
@@ -206,8 +245,13 @@ No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicaç
 - Logo original da Prime em alta (só existe a do Instagram, 150 px).
 - 206 dos 448 modelos têm nome genérico ("Corrida", "Casual"…): revisar com o Robson.
 - Fotos próprias dos mais vendidos (as do fornecedor já estão sem etiquetas, mas fotos da loja dão mais confiança).
-- **Domínio `primestoresneakers.com` comprado na Hostinger em 30/10/2026** (negócio fechado com o Robson). Falta ligar
-  à Vercel e trocar o DNS (A `@` e CNAME `www`). Só depois que o domínio abrir com HTTPS: trocar `siteUrl`
-  (`src/lib/loja.ts`), `index.html` (canonical, og, JSON-LD), `public/robots.txt` e `public/sitemap.xml`, e redirecionar
-  o `.vercel.app` para o domínio. Antes disso, não: os links `/?m=` das mensagens de WhatsApp quebrariam.
-- Google Analytics com aviso de cookies (medir cliques no WhatsApp) e ficha no Google.
+- **Domínio `primestoresneakers.com` comprado na Hostinger em 30/10/2026** (negócio fechado com o Robson). O DNS já
+  aponta para a Vercel (A `@` 76.76.21.21 e CNAME `www` → primestoresneakers.com, TTL 300, feito pelo usuário). Falta
+  adicionar o domínio no painel da Vercel (Settings → Domains do projeto, time huiataribeiro-6837): a CLI deste PC não
+  tem acesso ao time, e a troca de domínio pela CLI foi barrada pela regra de permissão (não contornar). Só depois que
+  o domínio abrir com HTTPS: trocar `siteUrl` (`src/lib/loja.ts`), `index.html` (canonical, og, JSON-LD),
+  `public/robots.txt` e `public/sitemap.xml`, e redirecionar o `.vercel.app` para o domínio mantendo o `?m=`. Antes
+  disso, não: os links `/?m=` das mensagens de WhatsApp quebrariam. Depois: kit de lançamento e relatório de qualidade
+  em PDF com o endereço final.
+- Medição: feita pelo painel do Robson, sem cookies (dispensa Google Analytics e aviso de cookies). Falta a ficha no
+  Google (Perfil da Empresa).

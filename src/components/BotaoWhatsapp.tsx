@@ -51,6 +51,7 @@ export function BotaoWhatsapp({ escondido }: { escondido: boolean }) {
     <a
       className={`flutuante${visivel ? ' flutuante--visivel' : ''}${rotulo ? ' flutuante--rotulo' : ''}`}
       href={whatsappLink(mensagemGeral)}
+      data-onde="flutuante"
       target="_blank"
       rel="noopener"
       aria-label={`Falar com o ${loja.atendente} no WhatsApp`}

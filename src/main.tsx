@@ -1,11 +1,16 @@
 import { StrictMode, startTransition } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { ligarRolagemSuave } from './lib/gsap';
+import { medir, medirCliquesNoWhatsapp, origemDaVisita } from './lib/medir';
 import App from './App';
 import './styles.css';
 
 // A rolagem suave existe antes da abertura, que a pausa enquanto toca
 ligarRolagemSuave();
+
+// Contagem anônima para o painel do Robson (uma visita por carregamento da página)
+medir({ t: 'visita', origem: origemDaVisita() });
+medirCliquesNoWhatsapp();
 
 const el = document.getElementById('root')!;
 const app = (

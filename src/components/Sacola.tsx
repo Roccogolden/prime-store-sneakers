@@ -168,7 +168,13 @@ export function Sacola({ itens, aoRemover, aoDefinirNum, aoLimpar, aoFechar, aoV
             <p className="sacola__nota">
               Sem pagamento no site: o {loja.atendente} confirma numeração, valor e entrega na conversa.
             </p>
-            <a className="btn btn--ouro btn--grande btn--bloco" href={whatsappLink(mensagemDaSacola(itens))} target="_blank" rel="noopener">
+            <a
+              className="btn btn--ouro btn--grande btn--bloco"
+              href={whatsappLink(mensagemDaSacola(itens))}
+              target="_blank"
+              rel="noopener"
+              data-pares={itens.length}
+            >
               <IconeWhatsapp width={20} height={20} /> Enviar para o {loja.atendente}
             </a>
             <button

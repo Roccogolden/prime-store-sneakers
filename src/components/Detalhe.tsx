@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap, useGSAP, reduzMovimento, ehCelular, travarPagina } from '../lib/gsap';
+import { medir } from '../lib/medir';
 import {
   atualizadoEm,
   dataCurta,
@@ -90,6 +91,11 @@ export function Detalhe({
   );
 
   useEffect(() => travarPagina(), []);
+
+  // cada tênis aberto conta como "visto" no painel (inclusive pelas setas e pelo link de um tênis)
+  useEffect(() => {
+    medir({ t: 'tenis', id });
+  }, [id]);
 
   // Troca de foto com uma passagem curta
   useLayoutEffect(() => {
@@ -255,7 +261,14 @@ export function Detalhe({
             </fieldset>
 
             <div className="detalhe__acao">
-              <a className="btn btn--ouro btn--grande btn--bloco" href={whatsappLink(mensagemDoTenis(t, num || undefined))} target="_blank" rel="noopener">
+              <a
+                className="btn btn--ouro btn--grande btn--bloco"
+                href={whatsappLink(mensagemDoTenis(t, num || undefined))}
+                target="_blank"
+                rel="noopener"
+                data-tenis={t.id}
+                data-num={num || undefined}
+              >
                 <IconeWhatsapp width={20} height={20} /> Pedir no WhatsApp
               </a>
             </div>

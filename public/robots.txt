@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /painel/
 
 Sitemap: https://prime-store-sneakers.vercel.app/sitemap.xml

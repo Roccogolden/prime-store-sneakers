@@ -11,6 +11,7 @@ export default defineConfig(({ isSsrBuild }) => ({
     // o build da pré-renderização não precisa das fotos de public/
     copyPublicDir: !isSsrBuild,
   },
+  // o painel do Robson (/painel/) tem build próprio (vite.painel.config.ts): nada dele entra no JS do site
   // no build da pré-renderização tudo vai junto num arquivo só (o gsap não roda como módulo no Node)
   ssr: { noExternal: true },
 }));

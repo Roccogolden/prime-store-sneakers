@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { gsap, useGSAP, Flip, ScrollTrigger, reduzMovimento, rolarPara } from '../lib/gsap';
+import { medir } from '../lib/medir';
 import {
   atualizadoEm,
   dataCurta,
@@ -69,6 +70,15 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
   const [busca, setBusca] = useState(filtro.busca);
   const [barraVisivel, setBarraVisivel] = useState(false);
   const montado = useRef(false);
+
+  // O que procuraram e não acharam vai para o painel (ajuda o Robson a saber o que comprar). Só depois de 1,5 s
+  // parado, para não contar cada letra digitada.
+  useEffect(() => {
+    const q = filtro.busca.trim();
+    if (!q || lista.length) return;
+    const t = setTimeout(() => medir({ t: 'busca0', q }), 1500);
+    return () => clearTimeout(t);
+  }, [filtro.busca, lista.length]);
   const gradePerto = usePerto(grade);
   const fotosGrade = useFotosPerto(grade, '60%');
 
@@ -359,7 +369,7 @@ export function Catalogo({ filtro, lista, aoFiltrar, aoAbrir }: Props) {
               >
                 Limpar filtros
               </button>
-              <a className="btn btn--ouro" href={whatsappLink(mensagemGeral)} target="_blank" rel="noopener">
+              <a className="btn btn--ouro" href={whatsappLink(mensagemGeral)} target="_blank" rel="noopener" data-onde="vazio">
                 <IconeWhatsapp width={18} height={18} /> Perguntar no WhatsApp
               </a>
             </div>
