@@ -36,9 +36,13 @@ do fornecedor "Neffos X1". A mesma foto aparece em várias numerações: o scrip
    igual para todas: sombras +10, contraste +5, vibração +8, textura +14, clareza +4, **sem mexer nos realces** (fundo
    branco continua branco: 237 → 236). O automático do LightCraft acinzentava os brancos e foi descartado. Cache em
    `.catalogo-cache/revelada/`; `--sem-revelar` pula essa etapa; sem o LightCraft instalado, usa a original;
-6. gera `public/fotos/<id>-{400,720,1080}.webp`, o `<id>-fundo.webp` (a própria foto com 96 px, desfocada: preenche o
-   quadro quando a foto aparece inteira, no cartão de foto quadrada/deitada e no detalhe, no lugar de faixas de cor
-   lisa) e `src/data/catalogo.json` (com `desde`: o dia em que a foto entrou no álbum, usado em "Chegaram agora").
+6. gera `public/fotos/<id>-{400,720,1080}.webp` e `src/data/catalogo.json` (com `desde`: o dia em que a foto entrou no
+   álbum, usado em "Chegaram agora"). Foto quadrada ou deitada aparece inteira sobre o grafite (`--sup`), no cartão e
+   no detalhe. **Não volte com o fundo feito da própria foto borrada** (o `<id>-fundo.webp`, até 31/10/2026): o
+   usuário viu as faixas como foto distorcida (pernas e sola esticadas em cima e embaixo).
+   Foto retocada à mão em `catalogo/corrigidas/<id>.jpg` manda sobre tudo (limpeza e LightCraft) e fica no git:
+   depois de pôr uma lá, `node scripts/aplicar-corrigidas.mjs [ids]` gera os WebP e acerta o `catalogo.json` sem
+   baixar os álbuns.
    A data "Catálogo atualizado em" é a da leitura dos álbuns (arquivo `.catalogo-cache/albuns.json`): `--offline` não muda.
 Foto nova sem linha na classificação **não entra** no site: o script lista os ids para classificar.
 Para atualizar: `npm run catalogo` → classificar as novas no `.tsv` → `npm run etiquetas` → revisar as fotos novas
@@ -75,6 +79,16 @@ Revisão em tamanho real de 26/10/2026 (o detalhe mostra a foto grande): os text
 borrados e o PhotoCraft copiava logo e pedaços de tênis para a pele (p533, p544, p006, p084). Refeitas com `letras` e
 `forma`; p137, p208, p409 e p549 recortadas; contornos de pílula que sobravam (p071, p222, p419, p467, p646) fechados.
 **Revise sempre em tamanho real** (folha original | limpa, recortada em volta de cada caixa), não em miniatura.
+Revisão de 31/10/2026 (o usuário achou fotos "distorcidas"; as 448 em folhas de contato ordenadas pelo tamanho da
+maior área limpa, mais um detector de textura perdida e de tarja na borda, e os suspeitos em recorte ampliado):
+- tarjas e molduras de print cortadas: p521 (88 px pretos em cima), p438 (46 px dos dois lados), p243 (faixa preta
+  embaixo), p330 (moldura branca), p647, p600, p145, p405, p578, p577, p629, p589, p036;
+- manchas da limpeza refeitas: p121 (borrão azulado e um "fantasma" sobre o fundo desfocado → fundo refeito só com o
+  marrom em volta), p101 (o `clone` de 26/10 pôs madeira e pedaço de tênis na caixa da Nike → espelho da caixa limpa),
+  p410 (tapete), p025 (trama do chão), p575 (parede canelada: sombra por coluna + textura fina copiada), p036 (pelo);
+  meias-luas de pílula na p634 e na p575. Os originais não estavam neste PC: o retoque saiu da maior versão publicada
+  (scripts em Python/OpenCV, conferidos em antes/depois ampliado) e ficou em `catalogo/corrigidas/`.
+- Ainda lisos, mas discretos: p467 e p466 (mármore), p596, p633, p634 (madeira), p617, p618.
 Ficaram de propósito: o texto de anúncios diagramados (p297, p299), marcas d'água de terceiros ("Dois AI" na p079 e o
 brilho do Gemini em algumas) e o texto das caixas dos tênis.
 

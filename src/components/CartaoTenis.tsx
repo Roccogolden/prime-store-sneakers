@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { fotoPadrao, fundoDesfocado, resumoNumeracoes, srcset, type Tenis } from '../lib/catalogo';
+import { fotoPadrao, resumoNumeracoes, srcset, type Tenis } from '../lib/catalogo';
 
 interface Props {
   t: Tenis;
@@ -16,7 +16,8 @@ export const CartaoTenis = memo(function CartaoTenis({ t, aoAbrir, foto }: Props
     <li className="cartao" data-id={t.id}>
       {/* sem aria-label: o nome lido é o próprio texto do cartão (marca, modelo, cor e numerações) */}
       <button type="button" className="cartao__botao" onClick={() => aoAbrir(t.id)}>
-        <span className={`cartao__foto${inteira ? ' cartao__foto--inteira' : ''}`} style={{ background: inteira && foto ? fundoDesfocado(t) : t.bg }}>
+        {/* foto deitada ou quadrada: inteira sobre o grafite (o fundo feito da própria foto borrada parecia foto esticada) */}
+        <span className={`cartao__foto${inteira ? ' cartao__foto--inteira' : ''}`} style={inteira ? undefined : { background: t.bg }}>
           {foto ? (
             <img
               src={fotoPadrao(t, 400)}

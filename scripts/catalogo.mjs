@@ -42,6 +42,10 @@ const REVELADAS = path.join(CACHE, 'revelada');
 // Fotos sem as etiquetas do fornecedor (código, REF, cor, preço apagado), feitas por `npm run etiquetas`.
 const LIMPAS = path.join(CACHE, 'limpa');
 const fonteDe = (id) => (fs.existsSync(path.join(LIMPAS, id + '.jpg')) ? path.join(LIMPAS, id + '.jpg') : path.join(ORIG, id + '.jpg'));
+// Fotos retocadas à mão (revisão de 31/10/2026: tarjas de print, manchas da limpeza): já vêm reveladas e mandam
+// sobre a limpeza automática e o LightCraft. Ficam no git, para a próxima atualização do catálogo não desfazer o retoque.
+const CORRIGIDAS = path.join(RAIZ, 'catalogo', 'corrigidas');
+const corrigidaDe = (id) => (fs.existsSync(path.join(CORRIGIDAS, id + '.jpg')) ? path.join(CORRIGIDAS, id + '.jpg') : null);
 
 const offline = process.argv.includes('--offline');
 const lerJson = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
@@ -131,6 +135,7 @@ if (temLightcraft) {
   fs.mkdirSync(REVELADAS, { recursive: true });
   const exec = promisify(execFile);
   const pendentes = noSite.filter((f) => {
+    if (corrigidaDe(f.id)) return false;
     const r = path.join(REVELADAS, f.id + '.jpg');
     return !fs.existsSync(r) || fs.statSync(r).mtimeMs < fs.statSync(fonteDe(f.id)).mtimeMs;
   });
@@ -154,7 +159,7 @@ if (temLightcraft) {
 for (const f of noSite) {
   const c = classes.get(f.id);
   const revelada = path.join(REVELADAS, f.id + '.jpg');
-  const orig = temLightcraft && fs.existsSync(revelada) ? revelada : fonteDe(f.id);
+  const orig = corrigidaDe(f.id) ?? (temLightcraft && fs.existsSync(revelada) ? revelada : fonteDe(f.id));
   const meta = await sharp(orig).rotate().metadata();
   const larguraReal = meta.autoOrient?.width ?? meta.width;
   const alturaReal = meta.autoOrient?.height ?? meta.height;
@@ -168,11 +173,8 @@ for (const f of noSite) {
     }
     ws.push(w);
   }
-  // a própria foto pequena e desfocada: preenche o quadro quando ela aparece inteira (no lugar de faixas de cor lisa)
-  const fundo = path.join(FOTOS, `${f.id}-fundo.webp`);
-  if (!fs.existsSync(fundo) || fs.statSync(fundo).mtimeMs < fs.statSync(orig).mtimeMs) {
-    await sharp(orig).rotate().resize({ width: 96 }).blur(4).modulate({ brightness: 0.78, saturation: 1.1 }).webp({ quality: 60 }).toFile(fundo);
-  }
+  // (até 31/10/2026 havia um <id>-fundo.webp, a própria foto borrada atrás da foto inteira: parecia foto esticada e
+  // saiu; a foto inteira agora fica sobre o grafite)
   // cor média um pouco escurecida: fundo do cartão enquanto a foto carrega
   const { channels } = await sharp(orig).rotate().resize(32).stats();
   const hex = '#' + channels.slice(0, 3).map((c) => Math.round(c.mean * 0.72).toString(16).padStart(2, '0')).join('');
@@ -196,7 +198,7 @@ for (const f of noSite) {
 }
 
 // Remove WebP de fotos que saíram do site
-const vivos = new Set(itens.flatMap((it) => [...it.ws.map((w) => `${it.id}-${w}.webp`), `${it.id}-fundo.webp`]));
+const vivos = new Set(itens.flatMap((it) => it.ws.map((w) => `${it.id}-${w}.webp`)));
 for (const arq of fs.readdirSync(FOTOS)) if (arq.endsWith('.webp') && !vivos.has(arq)) fs.unlinkSync(path.join(FOTOS, arq));
 
 // O site mostra o dia em que os álbuns foram lidos: rodar com --offline não muda a data.
