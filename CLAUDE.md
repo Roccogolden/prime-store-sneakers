@@ -211,11 +211,13 @@ navegador (A4, 3 páginas, papel branco; Ctrl+P também sai com ele).
   seguro em `http://localhost`); no ar ele é seguro.
 - Conferido em 01/11/2026: Chrome (celular e computador), WebKit (iPhone 13) e Firefox, sem erro no console e sem
   rolagem lateral; relatório conferido no PdfCraft; uma visita de verdade no site apareceu no painel.
-- **Para ligar (falta, no painel da Vercel, time huiataribeiro-6837):** Storage → Upstash for Redis (grátis) ligado ao
-  projeto `prime-store-sneakers` (cria `KV_REST_API_URL`/`KV_REST_API_TOKEN`); variáveis `PAINEL_EMAIL` e `PAINEL_SENHA`
-  (login de teste); `RESEND_API_KEY` (resend.com, grátis) para o "Esqueci a senha"; opcional `PAINEL_REMETENTE` (depois
-  de verificar o domínio no Resend, com os registros DNS na Hostinger) e `PAINEL_SEGREDO`; depois, Redeploy. Até lá
-  `/painel/` mostra "Painel quase pronto" e o contador do site não grava nada (responde 204).
+- **Ligado em 01/11/2026 pela CLI** (termos aceitos pelo usuário no navegador): Upstash for Redis `prime-painel`
+  (grátis, `gru1`, sem eviction e sem upgrade automático; cria `KV_REST_API_URL`/`KV_REST_API_TOKEN`) e Resend
+  `prime-painel-email` (grátis, `sa-east-1`, domínio primestoresneakers.com; cria `RESEND_API_KEY` e
+  `RESEND_EMAIL_DOMAIN`). O remetente é `painel@primestoresneakers.com`; enquanto o domínio não for confirmado na Resend
+  (registros DKIM/SPF na Hostinger, copiados do painel da Resend), o e-mail cai no remetente de teste dela, que só
+  entrega no dono da conta Resend. Login de teste: `PAINEL_EMAIL`/`PAINEL_SENHA` (passados ao usuário; o Robson troca
+  na aba Conta).
 - Na troca para o domínio: o "não contar este aparelho" vale por endereço (marcar de novo no domínio novo), e os links
   do kit de divulgação devem levar `?origem=whatsapp` / `?origem=instagram` para a origem aparecer certa.
 
@@ -227,9 +229,19 @@ No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicaç
 - Vercel: projeto `prime-store-sneakers` no time `huiataribeiro-6837`, ligado ao repositório (o primeiro
   `deploy --prod --yes` já conectou o GitHub). **Push na `main` publica sozinho** (conferido: status "Vercel" success
   em ~30 s no commit). A CLI acrescenta `.vercel` ao `.gitignore` ao ligar o projeto; não precisa repetir a linha.
-- Publicar pela CLI: `npm i vercel --ignore-scripts` numa pasta de rascunho (o script do esbuild falha nesse caminho e não
-  faz falta) e `node <pasta>/node_modules/vercel/dist/index.js deploy --prod --scope huiataribeiro-6837`, a partir
-  desta pasta. `.vercelignore` deixa de fora as fotos originais.
+- CLI da Vercel (01/11/2026): instalada no computador (`npm i -g vercel`, versão 65.9). O login padrão da CLI neste PC é
+  a conta `huiata15323-commits`, que não vê o projeto; o login da conta dona (`huiataribeiro-6837`, aprovado pelo
+  usuário) fica separado em `C:\Users\huiataribeiro.senai\.vercel-prime`: use `--global-config
+  C:/Users/huiataribeiro.senai/.vercel-prime` em todo comando deste projeto. A pasta já está ligada (`.vercel/`, fora
+  do git). No Git Bash, chame `node C:/Users/huiataribeiro.senai/AppData/Roaming/npm/node_modules/vercel/dist/index.js`
+  quando o comando tiver `&` (o `vercel.cmd` passa pelo cmd, que corta no `&`).
+- Variáveis de produção já criadas: `PAINEL_EMAIL` (robson@primestoresneakers.com), `PAINEL_SENHA` e `PAINEL_SEGREDO`
+  (segredos, valores não aparecem). Funções em `gru1` (São Paulo), pelo `regions` do `vercel.json`.
+- O modo automático do Claude Code barra `vercel domains add` (mudança de domínio) e instalar plugin/MCP no próprio
+  Claude Code: o usuário faz pelo painel ou pelo terminal dele. Não contornar.
+- Um push (1383b17, 01/11/2026) ficou sem deploy (o GitHub não avisou a Vercel); o seguinte publicou normal. Se o status
+  "Vercel" não aparecer no commit em ~1 min, publique pela CLI (`deploy --prod`).
+- `.vercelignore` deixa de fora as fotos originais, a pasta `revisao/` e o `ESTOQUE.txt`.
 - Depois de publicar: HTML no ar com consulta anti-cache (`curl -s ".../?n=$RANDOM"`), fotos e fontes com 200, e
   `testar-navegadores.mjs` no endereço real.
 

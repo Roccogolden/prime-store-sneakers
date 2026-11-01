@@ -224,7 +224,12 @@ async function tratar(request) {
         const token = sorteio(32);
         await rodar([['SET', `redefinir:${resumo(token)}`, '1', 'EX', 3600]]);
         const link = `${new URL(request.url).origin}/painel/?redefinir=${token}`;
-        await enviarEmail({ para: conta.email, assunto: 'Prime Store · criar senha nova do painel', ...emailDeSenha(link) });
+        try {
+          await enviarEmail({ para: conta.email, assunto: 'Prime Store · criar senha nova do painel', ...emailDeSenha(link) });
+        } catch (err) {
+          // a resposta continua igual (não conta se o e-mail é o da conta); o erro fica no log da Vercel
+          console.error('esqueci', err);
+        }
       }
       // a mesma resposta sempre: não conta para ninguém se o e-mail é o da conta
       return json({ ok: true });
