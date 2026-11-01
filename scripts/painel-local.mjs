@@ -85,4 +85,5 @@ http
     res.writeHead(arq.endsWith('404.html') ? 404 : 200, { 'content-type': TIPOS[path.extname(arq)] || 'application/octet-stream' });
     fs.createReadStream(arq).pipe(res);
   })
-  .listen(PORTA, () => console.log(`painel local em http://localhost:${PORTA}/painel/  (${process.env.PAINEL_EMAIL} / ${process.env.PAINEL_SENHA})`));
+  // só no próprio computador (127.0.0.1), nunca na rede local
+  .listen(PORTA, '127.0.0.1', () => console.log(`painel local em http://localhost:${PORTA}/painel/  (${process.env.PAINEL_EMAIL} / ${process.env.PAINEL_SENHA})`));
