@@ -17,7 +17,7 @@
     ] }
   ],
   "redirects": [
-    { "source": "/painel", "destination": "/painel/", "permanent": true },
-    { "source": "/:caminho*", "has": [{ "type": "host", "value": "prime-store-sneakers.vercel.app" }], "destination": "https://primestoresneakers.com/:caminho*", "permanent": true }
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "prime-store-sneakers.vercel.app" }], "destination": "https://primestoresneakers.com/$1", "permanent": true },
+    { "source": "/painel", "destination": "/painel/", "permanent": true }
   ]
 }
