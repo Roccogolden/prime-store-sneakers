@@ -16,5 +16,8 @@
       { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
     ] }
   ],
-  "redirects": [{ "source": "/painel", "destination": "/painel/", "permanent": true }]
+  "redirects": [
+    { "source": "/painel", "destination": "/painel/", "permanent": true },
+    { "source": "/:caminho*", "has": [{ "type": "host", "value": "prime-store-sneakers.vercel.app" }], "destination": "https://primestoresneakers.com/:caminho*", "permanent": true }
+  ]
 }

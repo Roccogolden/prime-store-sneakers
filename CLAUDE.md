@@ -222,7 +222,8 @@ navegador (A4, 3 páginas, papel branco; Ctrl+P também sai com ele).
   do kit de divulgação devem levar `?origem=whatsapp` / `?origem=instagram` para a origem aparecer certa.
 
 ## Publicação
-No ar desde 25/10/2026 em **https://prime-store-sneakers.vercel.app** (publicação autorizada pelo usuário).
+No ar desde 25/10/2026; desde 01/11/2026 em **https://primestoresneakers.com** (o `prime-store-sneakers.vercel.app`
+redireciona com 308 para o domínio, mantendo o caminho e o `?m=` dos links antigos do WhatsApp).
 - GitHub: `Roccogolden/prime-store-sneakers` (público, como os outros sites de clientes). O credential helper local
   está fixado na conta Roccogolden (a conta ativa do `gh` neste PC é outra), com a identidade
   `Huiatã Ribeiro <223874481+Roccogolden@users.noreply.github.com>`.

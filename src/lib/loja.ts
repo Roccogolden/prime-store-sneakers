@@ -1,4 +1,4 @@
-export const siteUrl = 'https://prime-store-sneakers.vercel.app';
+export const siteUrl = 'https://primestoresneakers.com';
 
 export const loja = {
   nome: 'Prime Store',
