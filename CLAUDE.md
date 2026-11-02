@@ -275,8 +275,11 @@ redireciona com 308 para o domínio, mantendo o caminho e o `?m=` dos links anti
   pagos na entrega; dados do Robson em branco para preencher à mão; domínio em nome do usuário, transferido ao Robson
   quando ele pedir; manutenção R$ 80/hora, sem mensalidade.
 - **`www.primestoresneakers.com`** adicionado em 01/11/2026 pela CLI (`vercel api .../domains`, com o pedido
-  explícito do usuário), redirecionando com 308 para o domínio. Falta o usuário pôr na Hostinger os 3 registros do
-  Resend (quadro "E-mail da loja" do painel) para o "Esqueci a senha" chegar em qualquer e-mail.
+  explícito do usuário), redirecionando com 308 para o domínio. Os 3 registros do Resend (TXT `resend._domainkey`,
+  CNAME `rsend`, CNAME `send`) foram postos na Hostinger pelo usuário e o domínio foi **verificado** em 01/11/2026: o
+  "Esqueci a senha" sai de painel@primestoresneakers.com para qualquer e-mail. A conta do painel ainda usa
+  robson@primestoresneakers.com (sem caixa de e-mail): o Robson troca pelo e-mail dele na aba Conta.
+  (A Cloudflare da Hostinger barra o Chrome controlado pelo MCP: a edição de DNS na Hostinger fica com o usuário.)
 - Hospedagem: o plano Hobby da Vercel é para uso não comercial (ver `mensalidade.md` da site-premium); site de cliente
   pede plano pago. Decisão do usuário.
 - **Logos das marcas na faixa: decidido NÃO colocar (26/10/2026).** O usuário confirmou que os tênis são "primeira
