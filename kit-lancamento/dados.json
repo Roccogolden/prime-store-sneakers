@@ -1,0 +1,67 @@
+{
+  "cliente": "Prime Store",
+  "site": "primestoresneakers.com",
+  "siteUrl": "https://primestoresneakers.com",
+  "links": {
+    "whatsapp": "https://primestoresneakers.com/?origem=whatsapp",
+    "instagram": "https://primestoresneakers.com/?origem=instagram",
+    "qr": "https://primestoresneakers.com/?origem=qr"
+  },
+  "instagram": "@prime.storego",
+  "telefone": "(62) 98116-8032",
+  "atendente": "Robson",
+  "cidade": "Aparecida de Goiânia — GO",
+  "regiao": "Aparecida de Goiânia e arredores",
+  "saida": "entrega",
+  "logo": "../public/marca/logo-prime.webp",
+  "fontes": {
+    "titulo": "../public/fontes/archivo-latin.woff2",
+    "texto": "../public/fontes/outfit-latin.woff2"
+  },
+  "catalogo": {
+    "total": 448,
+    "linhas": ["Tênis", "Chuteiras", "Infantil"],
+    "numeracoes": "do 18/19 ao 48/49",
+    "filtros": "marca, modelo e numeração"
+  },
+  "fotos": {
+    "lancamento": ["../public/fotos/p048-720.webp", "../public/fotos/p121-720.webp"],
+    "catalogo": ["../public/fotos/p001-720.webp", "../public/fotos/p006-720.webp", "../public/fotos/p016-720.webp"],
+    "novidades": ["../public/fotos/p001-720.webp", "../public/fotos/p002-720.webp", "../public/fotos/p004-720.webp", "../public/fotos/p006-720.webp"]
+  },
+  "passos": [
+    { "titulo": "Escolha no catálogo", "texto": "Filtre por marca, modelo e numeração e toque no tênis." },
+    { "titulo": "Mande pelo WhatsApp", "texto": "A mensagem sai pronta, com o modelo, a cor, o número e a foto." },
+    { "titulo": "Combine com o Robson", "texto": "Ele confirma o seu número e combina o pagamento e a entrega." }
+  ],
+  "stories": [
+    { "peca": "lancamento", "arquivo": "01-story-lancamento.jpg" },
+    { "peca": "pedir", "arquivo": "02-story-como-pedir.jpg" },
+    { "peca": "catalogo", "arquivo": "03-story-catalogo.jpg" },
+    { "peca": "novidades", "arquivo": "04-story-novidades.jpg" },
+    { "peca": "entrega", "arquivo": "05-story-entrega.jpg" }
+  ],
+  "capturas": {
+    "capa": { "url": "http://127.0.0.1:4173/", "rolarAte": "topo", "alturaCss": 780, "esperarMs": 5500 },
+    "pedido": { "url": "http://127.0.0.1:4173/?m=p048", "rolarAte": "topo", "alturaCss": 844, "esperarMs": 3500 }
+  },
+  "video": {
+    "url": "http://127.0.0.1:4173/",
+    "inicioMs": 3600,
+    "finalMs": 1200,
+    "roteiro": [
+      { "rolarAte": "#novidades-titulo", "margem": 90, "duracaoMs": 1800, "pausaMs": 1600 },
+      { "rolarAte": "#catalogo", "margem": 70, "duracaoMs": 1600, "pausaMs": 1600 },
+      { "rolarAte": "#prime", "margem": 70, "duracaoMs": 1600, "pausaMs": 1700 },
+      { "rolarAte": "#fechamento-titulo", "margem": 160, "duracaoMs": 1600, "pausaMs": 1500 },
+      { "rolarAte": "topo", "duracaoMs": 1900, "pausaMs": 900 }
+    ]
+  },
+  "destaques": [
+    { "nome": "catalogo", "icone": "grade" },
+    { "nome": "como-pedir", "icone": "sacola" },
+    { "nome": "novidades", "icone": "brilho" },
+    { "nome": "numeracao", "icone": "regua" },
+    { "nome": "entrega", "icone": "pin" }
+  ]
+}

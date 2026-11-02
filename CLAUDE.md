@@ -221,6 +221,18 @@ navegador (A4, 3 páginas, papel branco; Ctrl+P também sai com ele).
 - Na troca para o domínio: o "não contar este aparelho" vale por endereço (marcar de novo no domínio novo), e os links
   do kit de divulgação devem levar `?origem=whatsapp` / `?origem=instagram` para a origem aparecer certa.
 
+## Kit de lançamento (01/11/2026)
+`node kit-lancamento/gerar-kit.mjs kit-lancamento/dados.json [--sem-video]` com o build servido em
+`http://127.0.0.1:4173` (`node node_modules/vite/bin/vite.js preview --port 4173 --host 127.0.0.1`). Gerador adaptado
+do da skill site-premium, com peças próprias da Prime (`kit-lancamento/modelos/`): 01 lançamento, 02 como pedir (o
+detalhe do tênis no celular + os ilhós), 03 catálogo ("Do infantil ao 48"), 04 novidades, 05 entrega na região,
+06 vídeo do site no celular (com a abertura da caixa), 07 grupos, 5 capas de destaque, cartão A6 para ir **junto com
+cada entrega** (não há balcão) e `textos-prontos.txt` com plano de 7 dias. Os links levam a origem
+(`?origem=whatsapp`, `instagram`, `qr`), e o painel mostra "Cartão (QR code)". As capturas marcam "não contar este
+aparelho". Saída em `kit-lancamento/entrega/` (fora do git e da Vercel). Fotos escolhidas sem caixa de marca em
+destaque; nada de avaliação nem endereço (não há dados reais disso). Erro já visto: `html, body` com fundo opaco tapa
+o buraco do celular e o vídeo sai com a tela preta (o fundo tem de ser transparente; cada peça pinta o seu).
+
 ## Publicação
 No ar desde 25/10/2026; desde 01/11/2026 em **https://primestoresneakers.com** (o `prime-store-sneakers.vercel.app`
 redireciona com 308 para o domínio, mantendo o caminho e o `?m=` dos links antigos do WhatsApp).
