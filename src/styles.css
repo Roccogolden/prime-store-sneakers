@@ -2357,6 +2357,18 @@ html.has-intro body {
   color: var(--texto-3);
   font-size: 0.8125rem;
 }
+/* "Área da loja": o caminho do Robson para o painel, discreto na linha do © */
+.rodape__painel {
+  padding: 0.6em 0;
+  color: var(--texto-3);
+  text-decoration: none;
+}
+.rodape__painel:hover,
+.rodape__painel:focus-visible {
+  color: var(--ouro);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 /* ---------- WhatsApp flutuante ---------- */
 

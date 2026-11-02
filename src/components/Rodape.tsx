@@ -88,6 +88,11 @@ export function Rodape() {
         </p>
         <p className="rodape__copy">
           © {new Date().getFullYear()} {loja.nome} · {loja.cidade} – {loja.uf}
+          {/* acesso discreto ao painel do Robson (o painel pede login e senha; fora do Google pelo robots e noindex) */}
+          {' · '}
+          <a className="rodape__painel" href="/painel/" rel="nofollow">
+            Área da loja
+          </a>
         </p>
         <div className="rodape__assinatura" ref={assinatura} aria-hidden="true">
           <span className="rodape__selo">

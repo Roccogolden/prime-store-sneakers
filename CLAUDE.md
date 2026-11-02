@@ -225,6 +225,10 @@ navegador (A4, 3 páginas, papel branco; Ctrl+P também sai com ele).
   (registros DKIM/SPF na Hostinger, copiados do painel da Resend), o e-mail cai no remetente de teste dela, que só
   entrega no dono da conta Resend. Login de teste: `PAINEL_EMAIL`/`PAINEL_SENHA` (passados ao usuário; o Robson troca
   na aba Conta).
+- Acesso do Robson: link discreto "Área da loja" na linha do © do rodapé (`rel="nofollow"`) e o painel como ícone na
+  tela inicial do celular (`public/painel/manifest.webmanifest`; instruções na aba Conta). Aba Conta também mostra o
+  quadro "E-mail da loja" (`?acao=email-dominio`): situação do domínio no Resend e os registros de DNS que faltam
+  (TXT `resend._domainkey`, CNAME `rsend` e CNAME `send`), com "Verificar agora". A chave do Resend fica só no servidor.
 - Na troca para o domínio: o "não contar este aparelho" vale por endereço (marcar de novo no domínio novo), e os links
   do kit de divulgação devem levar `?origem=whatsapp` / `?origem=instagram` para a origem aparecer certa.
 
@@ -266,6 +270,15 @@ redireciona com 308 para o domínio, mantendo o caminho e o `?m=` dos links anti
   `testar-navegadores.mjs` no endereço real.
 
 ## Pendências e decisões em aberto (25/10/2026)
+- **Contrato (01/11/2026):** Claude Docs https://claude.ai/artifact/WpPKgrohFbwxT5gNF3JJ6V e PDF em `contrato/`
+  (fora do git e da Vercel: tem os dados bancários do usuário, e o repositório é público) e em Downloads. R$ 950,00
+  pagos na entrega; dados do Robson em branco para preencher à mão; domínio em nome do usuário, transferido ao Robson
+  quando ele pedir; manutenção R$ 80/hora, sem mensalidade.
+- **`www.primestoresneakers.com`** adicionado em 01/11/2026 pela CLI (`vercel api .../domains`, com o pedido
+  explícito do usuário), redirecionando com 308 para o domínio. Falta o usuário pôr na Hostinger os 3 registros do
+  Resend (quadro "E-mail da loja" do painel) para o "Esqueci a senha" chegar em qualquer e-mail.
+- Hospedagem: o plano Hobby da Vercel é para uso não comercial (ver `mensalidade.md` da site-premium); site de cliente
+  pede plano pago. Decisão do usuário.
 - **Logos das marcas na faixa: decidido NÃO colocar (26/10/2026).** O usuário confirmou que os tênis são "primeira
   linha" (não são originais). A faixa fica só com os nomes, que filtram o catálogo. Logo oficial em loja de não
   originais é o que as marcas rastreiam e notificam (derrubada do site; GitHub e Vercel são as contas do usuário) e
