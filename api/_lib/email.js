@@ -29,3 +29,49 @@ export async function enviarEmail({ para, assunto, html, texto }) {
   if (!r.ok && (r.status === 403 || r.status === 422) && remetente() !== REMETENTE_TESTE) r = await mandar(REMETENTE_TESTE);
   if (!r.ok) throw new Error(`e-mail não saiu (${r.status}): ${(await r.text()).slice(0, 200)}`);
 }
+
+/**
+ * Situação do domínio de e-mail no Resend e os registros de DNS que ele pede (públicos: vão no DNS da Hostinger).
+ * verificar = true pede ao Resend para conferir os registros agora. A chave nunca sai do servidor.
+ */
+export async function dominioDoEmail({ verificar = false } = {}) {
+  const nome = process.env.RESEND_EMAIL_DOMAIN || (globalThis.__emailFalso ? 'primestoresneakers.com' : '');
+  if (globalThis.__emailFalso) {
+    return {
+      dominio: nome,
+      status: 'pending',
+      registros: [
+        { registro: 'DKIM', tipo: 'TXT', nome: 'resend._domainkey', valor: 'p=CHAVE-DE-TESTE', prioridade: null, status: 'not_started' },
+        { registro: 'SPF', tipo: 'MX', nome: 'send', valor: 'feedback-smtp.sa-east-1.amazonses.com', prioridade: 10, status: 'not_started' },
+        { registro: 'SPF', tipo: 'TXT', nome: 'send', valor: 'v=spf1 include:amazonses.com ~all', prioridade: null, status: 'not_started' },
+      ],
+    };
+  }
+  if (!process.env.RESEND_API_KEY || !nome) return null;
+  const resend = async (caminho, metodo = 'GET') => {
+    const r = await fetch(`https://api.resend.com${caminho}`, {
+      method: metodo,
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+    });
+    const corpo = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(`resend ${r.status}: ${JSON.stringify(corpo).slice(0, 200)}`);
+    return corpo;
+  };
+  const lista = await resend('/domains');
+  const achado = (lista.data || []).find((d) => d.name === nome);
+  if (!achado) return { dominio: nome, status: 'nao-encontrado', registros: [] };
+  if (verificar) await resend(`/domains/${achado.id}/verify`, 'POST');
+  const d = await resend(`/domains/${achado.id}`);
+  return {
+    dominio: d.name,
+    status: d.status,
+    registros: (d.records || []).map((r) => ({
+      registro: r.record,
+      tipo: r.type,
+      nome: r.name,
+      valor: r.value,
+      prioridade: r.priority ?? null,
+      status: r.status,
+    })),
+  };
+}

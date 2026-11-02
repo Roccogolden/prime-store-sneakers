@@ -110,6 +110,16 @@ assert.equal((await api('entrar', { metodo: 'POST', ip: '2.2.2.2', corpo: { emai
 assert.equal((await api('entrar', { metodo: 'POST', ip: '2.2.2.2', corpo: { email: 'robson@teste.com', senha: 'senha-inicial-123' } })).status, 401, 'variáveis não valem mais');
 ok('troca de e-mail pede a senha atual; as variáveis não valem depois do primeiro acesso');
 
+// ---- e-mail da loja (registros de DNS do Resend; a chave fica no servidor) ----
+assert.equal((await api('email-dominio')).status, 401);
+r = await api('email-dominio', { cookie });
+const dom = await r.json();
+assert.equal(r.status, 200);
+assert.equal(dom.dominio, 'primestoresneakers.com');
+assert.equal(dom.registros.length, 3);
+assert.ok(!JSON.stringify(dom).includes('re_'), 'a chave do Resend não sai do servidor');
+ok('e-mail da loja: só com sessão, devolve situação e registros de DNS');
+
 // ---- proteções ----
 for (let k = 0; k < 10; k++) await api('entrar', { metodo: 'POST', ip: '9.9.9.9', corpo: { email: 'x@x.com', senha: 'x' } });
 assert.equal((await api('entrar', { metodo: 'POST', ip: '9.9.9.9', corpo: { email: 'robson@loja.com', senha: 'senha-nova-456' } })).status, 429);

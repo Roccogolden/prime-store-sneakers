@@ -4,7 +4,7 @@
 // Primeiro acesso: a conta nasce do PAINEL_EMAIL e do PAINEL_SENHA (variáveis da Vercel). Depois disso as variáveis
 // não valem mais: a senha fica só como resumo (scrypt) no banco, e o Robson troca e-mail e senha pelo próprio painel.
 import { bancoPronto, diaGoias, emObjeto, rodar } from './_lib/banco.js';
-import { emailPronto, enviarEmail } from './_lib/email.js';
+import { dominioDoEmail, emailPronto, enviarEmail } from './_lib/email.js';
 import {
   COOKIE,
   conferirSenha,
@@ -204,6 +204,13 @@ async function tratar(request) {
         if (!okEmail || !okSenha) return json({ erro: 'dados-errados' }, 401);
       }
       return json({ email: conta.email, emailPronto: emailPronto() }, 200, { 'set-cookie': cookieDaSessao(criarSessao(conta.versao)) });
+    }
+
+    case 'email-dominio': {
+      // GET: situação e registros de DNS do e-mail da loja; POST: pede ao Resend para conferir agora
+      if (!(await contaDaSessao(request))) return json({ erro: 'sem-sessao' }, 401);
+      const d = await dominioDoEmail({ verificar: request.method === 'POST' });
+      return d ? json(d) : json({ erro: 'sem-email' }, 503);
     }
 
     case 'sair':

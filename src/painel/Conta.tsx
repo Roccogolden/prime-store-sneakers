@@ -2,6 +2,7 @@ import { useId, useState, type FormEvent } from 'react';
 import { CHAVE_NAO_CONTAR } from '../lib/medir';
 import { chamar, mensagemDoErro, sessaoCaiu, type Conta } from './api';
 import { CampoSenha, Mensagem } from './Campos';
+import { EmailLoja } from './EmailLoja';
 
 type Msg = { ok: boolean; texto: string } | null;
 
@@ -110,6 +111,8 @@ export function ContaTela({ conta, aoAtualizar, aoSair, aoSessaoCair }: Props) {
           <p className="pn-aviso">O envio de e-mail ainda não foi ligado: por enquanto, “Esqueci a senha” não manda o link. Guarde bem a sua senha.</p>
         )}
       </section>
+
+      {conta.emailPronto && <EmailLoja aoSessaoCair={aoSessaoCair} />}
 
       <section className="pn-cartao">
         <div className="pn-cartao__topo">
