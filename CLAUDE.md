@@ -177,6 +177,13 @@ dourado em degradê por cor chapada: não foi usado, para não alterar a marca. 
   para 86–87 e o TBT de 460 para ~70–270 ms. O conteúdo do topo não usa opacidade 0 (fica pronto sob a cortina).
 - **Draggable: decidir no `onDragEnd`, não no `onRelease`** (lá o `isDragging` do GSAP já vem falso; foi por isso que
   a vitrine não jogava a carta).
+- **Relatório de qualidade (`relatorio-qualidade.mjs` da site-agencia), 01/11/2026, no domínio:** celular 71 (FCP 2,6 s,
+  LCP 3,3 s, TBT ~540 ms: a abertura da caixa segura a tela ~2 s e o JS ocupa o celular simulado), computador 97;
+  acessibilidade, boas práticas e SEO 100. Dois itens do script saem errados neste site e foram corrigidos à mão no
+  HTML e reimpressos: "Peso da página" soma as fotos do catálogo inteiro carregadas enquanto a auditoria rola a página
+  até o fim (3,4 MB; o que abre o site é ~0,9 MB, o `total-byte-weight` do Lighthouse) e "Fotos nítidas" lê a largura
+  natural dividida pela densidade do `srcset` (50 alarmes falsos; pela largura real de cada arquivo, nenhuma abaixo do
+  ideal). Os testes no ar contam algumas visitas no painel (navegadores sem "headless" no nome).
 - O teste dos navegadores pode acusar `NS_BINDING_ABORTED` no Firefox: é o navegador cancelando um download de foto
   (troca de versão do `srcset`). Repita o cenário; se passar, não é defeito.
 
