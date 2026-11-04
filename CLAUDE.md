@@ -269,6 +269,17 @@ redireciona com 308 para o domínio, mantendo o caminho e o `?m=` dos links anti
 - Depois de publicar: HTML no ar com consulta anti-cache (`curl -s ".../?n=$RANDOM"`), fotos e fontes com 200, e
   `testar-navegadores.mjs` no endereço real.
 
+## Em espera desde 04/11/2026
+O Robson pediu um tempo (sem dinheiro no momento). No domínio está só o aviso "Site em desenvolvimento" (pasta
+`_standby/`: logo, dourado e o cadarço parado; noindex; qualquer caminho, inclusive `/painel` e `/?m=`, mostra o aviso;
+o `.vercel.app` redireciona com 307). O site completo continua no git (main) e na publicação `dpl_4dGYP6K8tcNkTsJdHhqAouhUnnCm`
+(commit 8f8ee7b); os dados do painel do Robson continuam no Upstash. A publicação automática pelo GitHub está desligada
+(`"git": {"deploymentEnabled": false}` no `vercel.json`), para um push não trazer o site de volta sem querer.
+- Para voltar ao ar: tirar a linha `"git"` do `vercel.json`, commit e push (ou, na pasta, `deploy --prod` com a CLI e o
+  `--global-config` da conta dona). Conferir o domínio com 4G: a rede do SENAI bloqueia primestoresneakers.com
+  (FortiGuard responde 208.91.112.55, inclusive no DNS do Google).
+- Para atualizar o aviso: editar `_standby/` e rodar `deploy --prod --yes` dentro dela (ela tem o próprio `.vercel`).
+
 ## Pendências e decisões em aberto (25/10/2026)
 - **Contrato (01/11/2026):** Claude Docs https://claude.ai/artifact/WpPKgrohFbwxT5gNF3JJ6V e PDF em `contrato/`
   (fora do git e da Vercel: tem os dados bancários do usuário, e o repositório é público) e em Downloads. R$ 950,00

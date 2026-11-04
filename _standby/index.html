@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Prime Store · Site em desenvolvimento</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0B0B0C" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <style>
+      /* Aviso de site em espera (o site completo está guardado no git, na main). Mesma identidade da Prime:
+         preto, dourado e marfim; Archivo nos títulos e Outfit no texto. */
+      @font-face {
+        font-family: 'Archivo';
+        font-weight: 500 900;
+        font-stretch: 75% 125%;
+        font-display: swap;
+        src: url('/fontes/archivo-latin.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Outfit';
+        font-weight: 400 700;
+        font-display: swap;
+        src: url('/fontes/outfit-latin.woff2') format('woff2');
+      }
+      :root {
+        --preto: #0b0b0c;
+        --grafite: #1f1f22;
+        --ouro: #f3b932;
+        --ouro-velho: #c9a253;
+        --marfim: #f6f2ea;
+        --suave: #a9a39a;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      html, body { background: var(--preto); }
+      body {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        min-height: 100svh;
+        padding-block: max(2rem, env(safe-area-inset-top, 0px)) max(2rem, env(safe-area-inset-bottom, 0px));
+        padding-left: max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
+        color: var(--marfim);
+        font: 400 1rem / 1.6 'Outfit', system-ui, sans-serif;
+        text-align: center;
+      }
+      main { display: grid; justify-items: center; max-width: 26rem; }
+      .logo {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px var(--grafite), 0 0 0 5px var(--preto), 0 0 0 6px rgb(201 162 83 / 0.45);
+      }
+      .marca {
+        margin-top: 1.5rem;
+        font: 700 0.75rem / 1 'Archivo', system-ui, sans-serif;
+        font-stretch: 112%;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--ouro-velho);
+      }
+      h1 {
+        margin-top: 0.9rem;
+        font: 800 clamp(2.1rem, 9vw, 3rem) / 1.04 'Archivo', system-ui, sans-serif;
+        font-stretch: 108%;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+      /* o cadarço dourado, a assinatura do site, em versão parada */
+      .cadarco { display: block; width: 120px; height: 14px; margin-top: 1.4rem; }
+      p.texto { margin-top: 1.1rem; color: var(--suave); text-wrap: balance; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img class="logo" src="/logo-prime.webp" alt="" width="76" height="76" />
+      <p class="marca">Prime Store</p>
+      <h1>Site em desenvolvimento</h1>
+      <svg class="cadarco" viewBox="0 0 120 14" aria-hidden="true">
+        <path d="M2 7 C 22 1, 38 13, 60 7 S 98 1, 118 7" fill="none" stroke="#F3B932" stroke-width="3" stroke-linecap="round" />
+        <path d="M2 7 C 22 1, 38 13, 60 7 S 98 1, 118 7" fill="none" stroke="#0B0B0C" stroke-width="1" stroke-linecap="round" stroke-dasharray="1.5 4" opacity="0.55" />
+      </svg>
+      <p class="texto">Este site está sendo preparado e ainda não está disponível.</p>
+    </main>
+  </body>
+</html>
